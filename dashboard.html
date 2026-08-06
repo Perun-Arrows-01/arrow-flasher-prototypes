@@ -1,0 +1,217 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Arrow Flasher — Dashboard</title>
+  <style>
+    :root {
+      --bg-page: #010409;
+      --bg-card: #0d1117;
+      --bg-input: #161b22;
+      --border: #30363d;
+      --border-subtle: #21262d;
+      --text: #c9d1d9;
+      --muted: #8b949e;
+      --green: #238636;
+      --green-soft: rgba(46,160,67,.14);
+      --green-text: #7ee787;
+      --red: #f85149;
+      --red-soft: #3d1418;
+      --red-text: #ffb4ab;
+      --amber: #d29922;
+      --amber-soft: rgba(213,153,34,.12);
+      --amber-text: #ffd78e;
+      --blue: #1f6feb;
+      --blue-soft: rgba(31,111,235,.14);
+      --blue-text: #79c0ff;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: var(--bg-page); color: var(--text); font-family: var(--sans); font-size: 14px; }
+    body { padding: 24px 16px 48px; }
+    .app { width: min(1200px, 100%); margin: 0 auto; }
+    nav { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+    nav a { padding: 8px 16px; background: var(--bg-input); color: #fff; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; text-decoration: none; }
+    nav a.active { background: var(--blue); border-color: var(--blue); }
+    h1 { margin: 0; font-size: 24px; font-weight: 600; }
+    .header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
+    .title-row { display: flex; align-items: center; gap: 10px; }
+    .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); display: inline-block; }
+    .live-text { color: var(--muted); font-size: 13px; }
+    .controls { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    .control-group { display: flex; align-items: center; gap: 6px; }
+    .control-group label { color: var(--muted); font-size: 13px; margin: 0; }
+    .select-wrap { position: relative; display: inline-flex; align-items: center; }
+    select { appearance: none; -webkit-appearance: none; -moz-appearance: none; min-height: 32px; padding: 6px 28px 6px 10px; background: var(--bg-input); color: var(--text); border: 1px solid var(--border); border-radius: 6px; font-size: 13px; cursor: pointer; min-width: 140px; }
+    .select-wrap::after { content: ''; position: absolute; right: 10px; width: 8px; height: 8px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg); pointer-events: none; }
+    button { padding: 6px 12px; background: var(--bg-input); color: var(--text); border: 1px solid var(--border); border-radius: 6px; font-size: 13px; cursor: pointer; }
+    button.primary { background: var(--green-soft); color: var(--green-text); border-color: rgba(46,160,67,.42); font-weight: 600; }
+    button.danger { background: var(--red-soft); color: var(--red-text); border-color: rgba(248,81,73,.42); }
+    input[type="checkbox"] { accent-color: var(--blue); }
+    .summary { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
+    .summary-stats { display: flex; gap: 16px; font-size: 13px; color: var(--muted); }
+    .summary-stats strong { color: var(--text); }
+    .banner { border-radius: 8px; padding: 10px 14px; margin-bottom: 16px; font-size: 13px; }
+    .banner.green { background: var(--green-soft); border: 1px solid rgba(46,160,67,.42); color: var(--green-text); }
+    .banner.green strong { color: var(--green); }
+    .banner.red { background: var(--red-soft); border: 1px solid rgba(248,81,73,.42); color: var(--red-text); }
+    .banner.red strong { color: var(--red); }
+    .banner.amber { background: var(--amber-soft); border: 1px solid rgba(210,153,34,.42); color: var(--amber-text); }
+    .banner.amber strong { color: var(--amber); }
+    .banner.blue { background: var(--blue-soft); border: 1px solid rgba(31,111,235,.42); color: var(--blue-text); }
+    .banner.blue strong { color: var(--blue); }
+    .banner-actions { display: flex; gap: 8px; margin-top: 8px; }
+    .slot-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
+    .slot-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
+    .slot-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
+    .slot-label { color: var(--muted); font-size: 12px; font-family: var(--mono); }
+    .slot-number { background: var(--bg-input); border: 1px solid var(--border); padding: 2px 8px; border-radius: 12px; font-size: 12px; font-family: var(--mono); }
+    .state-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-family: var(--mono); border: 1px solid var(--border); margin-bottom: 10px; }
+    .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
+    .state-empty .dot { background: var(--muted); }
+    .state-flash .dot { background: var(--green); animation: pulse 1.2s infinite; }
+    .state-esc .dot { background: var(--blue); animation: pulse 1.2s infinite; }
+    .state-wait .dot { background: var(--amber); animation: pulse 1.2s infinite; }
+    .state-done .dot { background: var(--green); }
+    .state-error .dot { background: var(--red); }
+    .progress-container { margin: 8px 0; }
+    .progress-header { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 4px; }
+    .progress-bar { height: 6px; background: var(--bg-input); border-radius: 3px; overflow: hidden; }
+    .progress-fill { height: 100%; background: var(--green); border-radius: 3px; }
+    .progress-fill.blue { background: var(--blue); }
+    .countdown { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 13px; margin: 8px 0; }
+    .countdown-time { color: var(--amber); font-size: 16px; }
+    .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+    .chip { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-family: var(--mono); border: 1px solid var(--border); background: var(--bg-input); color: var(--muted); }
+    .chip.uid { color: var(--text); }
+    .chip.stuck { color: var(--amber); border-color: rgba(210,153,34,.42); }
+    .chip.repeat { color: var(--red); border-color: rgba(248,81,73,.42); }
+    .slot-actions { display: flex; gap: 8px; margin-top: 10px; }
+    .big-banner { border-radius: 8px; padding: 14px; text-align: center; font-weight: 600; margin-top: 12px; }
+    .big-banner.done { background: var(--green-soft); color: var(--green-text); border: 1px solid rgba(46,160,67,.42); }
+    .big-banner.error { background: var(--red-soft); color: var(--red-text); border: 1px solid rgba(248,81,73,.42); }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+    @media (max-width: 720px) { .header { flex-direction: column; } .summary { flex-direction: column; align-items: flex-start; } }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <nav aria-label="Main navigation">
+      <a href="/af/dashboard.html" class="active">Dashboard</a>
+      <a href="/af/setup.html">Setup</a>
+      <a href="/af/history.html">History</a>
+      <a href="/af/rxbind.html">RX Bind</a>
+      <a href="/af/diag.html">Diagnostics</a>
+      <a href="/af/license.html">License</a>
+    </nav>
+
+    <div class="header">
+      <div class="title-row">
+        <h1>Dashboard</h1>
+        <span class="live-dot"></span>
+        <span class="live-text">live</span>
+      </div>
+      <div class="controls">
+        <div class="control-group">
+          <label for="activeTemplate">Active template</label>
+          <div class="select-wrap"><select id="activeTemplate"><option>arrow-flight-f405</option><option>quad-x-default</option></select></div>
+        </div>
+        <label class="control-group"><input type="checkbox" /> Silent mode</label>
+        <button type="button">Rescan</button>
+        <div class="control-group">
+          <label for="sort">Sort</label>
+          <div class="select-wrap"><select id="sort"><option>slot #</option><option>recently plugged</option></select></div>
+        </div>
+        <button type="button">Hide empty</button>
+      </div>
+    </div>
+
+    <div class="summary">
+      <div class="summary-stats">
+        <span>6 slots</span>
+        <span>done <strong>1</strong></span>
+        <span>busy <strong>3</strong></span>
+        <span>error <strong>1</strong></span>
+        <span>empty <strong>1</strong></span>
+      </div>
+      <div style="display:flex;gap:8px;">
+        <button type="button">Reset session</button>
+        <button type="button">Export CSV</button>
+      </div>
+    </div>
+
+    <div class="banner green" role="status"><strong>✅ Server ready</strong> — All subsystems operational.</div>
+    <div class="banner blue" role="status"><strong>ℹ Mismatch</strong> — Slot 3 plugged drone matches template <strong>quad-x-default</strong>. <span class="banner-actions"><button type="button">Switch to quad-x-default</button><button type="button">Dismiss</button><button type="button">Reboot to DFU</button></span></div>
+    <div class="banner amber" role="status"><strong>⚠ Unclaimed plug</strong> — USB 1-4.1 unrecognized. <span class="banner-actions"><button type="button">Claim</button><button type="button">Dismiss</button></span></div>
+
+    <div class="slot-grid">
+      <!-- EMPTY -->
+      <div class="slot-card">
+        <div class="slot-header"><span class="slot-label">1-1.1</span><span class="slot-number">#1</span></div>
+        <div class="select-wrap"><select><option>arrow-flight-f405</option><option>quad-x-default</option></select></div>
+        <div class="state-badge state-empty"><span class="dot"></span>EMPTY</div>
+        <div style="color:var(--muted);font-size:13px;">Waiting for drone…</div>
+      </div>
+
+      <!-- FLASHING_FC -->
+      <div class="slot-card">
+        <div class="slot-header"><span class="slot-label">1-2.4</span><span class="slot-number">#2</span></div>
+        <div class="select-wrap"><select><option>arrow-flight-f405</option></select></div>
+        <div class="state-badge state-flash"><span class="dot"></span>FLASHING_FC</div>
+        <div class="progress-container">
+          <div class="progress-header"><span>STM32F405 — arrowflight-f405-1.14.0.hex</span><span>62%</span></div>
+          <div class="progress-bar"><div class="progress-fill" style="width:62%"></div></div>
+        </div>
+        <div class="chips"><span class="chip stuck">possibly stuck (12 s)</span></div>
+        <div class="slot-actions"><button type="button" class="danger">Cancel</button></div>
+      </div>
+
+      <!-- ESC_PHASE -->
+      <div class="slot-card">
+        <div class="slot-header"><span class="slot-label">1-2.1</span><span class="slot-number">#3</span></div>
+        <div class="select-wrap"><select><option>quad-x-default</option></select></div>
+        <div class="state-badge state-esc"><span class="dot"></span>ESC_PHASE</div>
+        <div class="progress-container">
+          <div class="progress-header"><span>ESC 2 · phase · 2/4</span><span style="color:var(--blue)">38%</span></div>
+          <div class="progress-bar"><div class="progress-fill blue" style="width:38%"></div></div>
+        </div>
+        <div class="chips"><span class="chip">MCU 350022001150563131323932</span></div>
+        <div class="slot-actions"><button type="button" class="danger">Cancel</button></div>
+      </div>
+
+      <!-- WAIT_BATTERY -->
+      <div class="slot-card">
+        <div class="slot-header"><span class="slot-label">1-2.2</span><span class="slot-number">#4</span></div>
+        <div class="select-wrap"><select><option>arrow-flight-f405</option></select></div>
+        <div class="state-badge state-wait"><span class="dot"></span>WAIT_BATTERY</div>
+        <div class="countdown"><span>Connect battery now</span><span class="countdown-time">2:35</span><span>left</span></div>
+        <div style="font-size:12px;color:var(--muted);">Device in DFU, awaiting power for motor test.</div>
+        <div class="slot-actions"><button type="button">Retry</button><button type="button" class="danger">Cancel</button></div>
+      </div>
+
+      <!-- DONE -->
+      <div class="slot-card">
+        <div class="slot-header"><span class="slot-label">1-1.1</span><span class="slot-number">#5</span></div>
+        <div class="select-wrap"><select><option>arrow-flight-f405</option></select></div>
+        <div class="state-badge state-done"><span class="dot"></span>DONE</div>
+        <div class="chips"><span class="chip uid">MCU 350022001150563131323932</span><span class="chip">8.3 s</span><span class="chip">first seen 14:21</span></div>
+        <div class="big-banner done">✅ READY — DISCONNECT</div>
+        <div class="slot-actions"><button type="button">Eject</button></div>
+      </div>
+
+      <!-- ERROR -->
+      <div class="slot-card">
+        <div class="slot-header"><span class="slot-label">1-1.2</span><span class="slot-number">#6</span></div>
+        <div class="select-wrap"><select><option>arrow-flight-f405</option></select></div>
+        <div class="state-badge state-error"><span class="dot"></span>ERROR</div>
+        <div class="chips"><span class="chip repeat">repeat failure #3</span><span class="chip uid">MCU 34001a001150563131323933</span></div>
+        <div style="color:var(--red-text);font-size:13px;margin:8px 0;">DFU flash failed — check USB cable, hold BOOT0 longer</div>
+        <div class="big-banner error">⚠ FAILED — CHECK</div>
+        <div class="slot-actions"><button type="button" class="primary">Retry</button><button type="button" class="danger">Skip</button></div>
+      </div>
+    </div>
+  </main>
+</body>
+</html>

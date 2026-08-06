@@ -1,0 +1,115 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Arrow Flasher — Diagnostics</title>
+  <style>
+    :root {
+      --bg-page: #010409;
+      --bg-card: #0d1117;
+      --bg-input: #161b22;
+      --border: #30363d;
+      --border-subtle: #21262d;
+      --text: #c9d1d9;
+      --muted: #8b949e;
+      --green: #238636;
+      --green-soft: rgba(46,160,67,.14);
+      --green-text: #7ee787;
+      --red: #f85149;
+      --red-soft: #3d1418;
+      --red-text: #ffb4ab;
+      --blue: #1f6feb;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: var(--bg-page); color: var(--text); font-family: var(--sans); font-size: 14px; }
+    body { padding: 24px 16px 48px; }
+    .app { width: min(1100px, 100%); margin: 0 auto; }
+    nav { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+    nav a { padding: 8px 16px; background: var(--bg-input); color: #fff; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; text-decoration: none; }
+    nav a.active { background: var(--blue); border-color: var(--blue); }
+    h1 { margin: 0 0 16px; font-size: 24px; font-weight: 600; }
+    h2 { margin: 0 0 10px; font-size: 16px; font-weight: 600; }
+    .panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+    .health { background: var(--red-soft); border: 1px solid rgba(248,81,73,.42); border-radius: 8px; padding: 10px 14px; color: var(--red-text); font-size: 13px; }
+    .health strong { color: var(--red); }
+    .health ul { margin: 6px 0 0; padding-left: 18px; }
+    .health li { margin: 4px 0; }
+    .health code { font-family: var(--mono); background: rgba(0,0,0,.2); padding: 1px 4px; border-radius: 3px; }
+    .health.ok { background: var(--green-soft); border-color: rgba(46,160,67,.42); color: var(--green-text); }
+    .health.ok strong { color: var(--green); }
+    .section { margin-top: 16px; }
+    .section:first-child { margin-top: 0; }
+    .empty { color: var(--muted); font-size: 13px; }
+    .usb-list { font-family: var(--mono); font-size: 12px; margin: 0; padding-left: 18px; line-height: 1.7; }
+    .usb-list li { margin: 3px 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; font-family: var(--mono); }
+    thead th { text-align: left; color: var(--muted); border-bottom: 1px solid var(--border); padding: 4px 12px 4px 0; font-weight: 600; }
+    tbody td { padding: 4px 12px 4px 0; border-bottom: 1px solid var(--border-subtle); }
+    a { color: #58a6ff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    button { padding: 7px 12px; background: var(--bg-input); color: var(--text); border: 1px solid var(--border); border-radius: 6px; font-size: 14px; cursor: pointer; }
+    button:disabled { opacity: 0.55; cursor: not-allowed; }
+    .status { color: var(--muted); font-size: 13px; margin-top: 8px; }
+    .meta { color: var(--muted); font-size: 12px; margin-bottom: 8px; }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <nav aria-label="Main navigation">
+      <a href="/af/dashboard.html">Dashboard</a>
+      <a href="/af/setup.html">Setup</a>
+      <a href="/af/history.html">History</a>
+      <a href="/af/rxbind.html">RX Bind</a>
+      <a href="/af/diag.html" class="active">Diagnostics</a>
+      <a href="/af/license.html">License</a>
+    </nav>
+
+    <h1>Diagnostics</h1>
+
+    <div class="health" role="alert">
+      <strong>⚠ Server not ready</strong>
+      <ul>
+        <li><code>usbDetection</code>: native module load failed — Rebuild native modules (npm rebuild better-sqlite3 usb-detection) and restart the server.</li>
+        <li><code>db</code>: SQLite file locked — Check the SQLite file in the data dir; restart the server.</li>
+        <li><code>dataDir</code>: permission denied /data — Check filesystem permissions on the data dir.</li>
+        <li><code>slotTable</code>: no slots.json found — Edit data/slots.json or use the Claim banner to map a slot.</li>
+      </ul>
+    </div>
+
+    <div class="panel">
+      <section class="section">
+        <h2>USB tree</h2>
+        <ul class="usb-list">
+          <li>USB-FS STMicroelectronics STM32 BOOTLOADER — VID 0x0483 PID 0xdf11 loc 0x1-2-3</li>
+          <li>Silicon Labs CP210x USB to UART Bridge — VID 0x10c4 PID 0xea60 loc 0x1-1</li>
+          <li>Genesys Logic Hub — VID 0x05e3 PID 0x0608 loc 0x1</li>
+          <li>Arrow Flasher Probe (CDC) — VID 0x2b3f PID 0x0001 loc 0x1-2-1</li>
+        </ul>
+      </section>
+
+      <section class="section">
+        <h2>ESC error dumps (latest 200)</h2>
+        <table aria-label="ESC error dumps">
+          <thead><tr><th>When</th><th>Slot</th><th>ESC</th><th>UID</th><th>Size</th><th>File</th></tr></thead>
+          <tbody>
+            <tr><td>2026-08-05 14:18:43</td><td>2</td><td>2</td><td>350022001150563131323932</td><td>1.2 kB</td><td><a href="#">download</a></td></tr>
+            <tr><td>2026-08-05 13:45:03</td><td>2</td><td>1</td><td>34001a001150563131323933</td><td>856 B</td><td><a href="#">download</a></td></tr>
+            <tr><td>2026-08-05 12:11:18</td><td>3</td><td>4</td><td>3100ff001150563131323934</td><td>2.1 kB</td><td><a href="#">download</a></td></tr>
+            <tr><td>2026-08-05 11:52:07</td><td>1</td><td>3</td><td>350022001150563131323932</td><td>1.0 kB</td><td><a href="#">download</a></td></tr>
+          </tbody>
+        </table>
+      </section>
+
+      <section class="section">
+        <h2>Server control</h2>
+        <p class="meta">Uptime: 2 h 14 m 33 s</p>
+        <button type="button" disabled title="Wait until all slots are idle">Restart server</button>
+        <p class="status">Restart disabled: server is not idle.</p>
+      </section>
+    </div>
+  </main>
+</body>
+</html>

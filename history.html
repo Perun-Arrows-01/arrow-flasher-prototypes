@@ -1,0 +1,133 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Arrow Flasher — History</title>
+  <style>
+    :root {
+      --bg-page: #010409;
+      --bg-card: #0d1117;
+      --bg-input: #161b22;
+      --border: #30363d;
+      --border-subtle: #21262d;
+      --text: #c9d1d9;
+      --muted: #8b949e;
+      --green: #238636;
+      --green-soft: rgba(46,160,67,.14);
+      --green-text: #7ee787;
+      --red: #f85149;
+      --red-soft: #3d1418;
+      --red-text: #ffb4ab;
+      --blue: #1f6feb;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: var(--bg-page); color: var(--text); font-family: var(--sans); font-size: 14px; }
+    body { padding: 24px 16px 48px; }
+    .app { width: min(1100px, 100%); margin: 0 auto; }
+    nav { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+    nav a { padding: 8px 16px; background: var(--bg-input); color: #fff; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; text-decoration: none; }
+    nav a.active { background: var(--blue); border-color: var(--blue); }
+    h1 { margin: 0 0 16px; font-size: 24px; font-weight: 600; }
+    .filters { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
+    .filters button { padding: 6px 12px; background: var(--bg-input); color: var(--text); border: 1px solid var(--border); border-radius: 6px; font-size: 13px; cursor: pointer; }
+    .filters button.active { background: var(--blue); border-color: var(--blue); color: #fff; }
+    .panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
+    .empty { color: var(--muted); font-size: 13px; text-align: center; padding: 32px 0; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    thead th { text-align: left; color: var(--muted); border-bottom: 1px solid var(--border); padding: 8px 12px 8px 0; font-weight: 600; }
+    tbody td { padding: 8px 12px 8px 0; border-bottom: 1px solid var(--border-subtle); vertical-align: top; }
+    tr:last-child td { border-bottom: 0; }
+    .result { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; padding: 2px 8px; border-radius: 12px; font-family: var(--mono); }
+    .result.success { background: var(--green-soft); color: var(--green-text); border: 1px solid rgba(46,160,67,.42); }
+    .result.failure { background: var(--red-soft); color: var(--red-text); border: 1px solid rgba(248,81,73,.42); }
+    .expand { color: #58a6ff; cursor: pointer; font-size: 12px; font-family: var(--mono); }
+    .detail { background: var(--bg-input); border: 1px solid var(--border); border-radius: 6px; padding: 12px; margin-top: 8px; font-size: 12px; font-family: var(--mono); }
+    .detail-row { display: flex; gap: 16px; padding: 3px 0; }
+    .detail-row span:first-child { color: var(--muted); min-width: 140px; }
+    .hidden { display: none; }
+    a { color: #58a6ff; text-decoration: none; }
+    a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <nav aria-label="Main navigation">
+      <a href="/af/dashboard.html">Dashboard</a>
+      <a href="/af/setup.html">Setup</a>
+      <a href="/af/history.html" class="active">History</a>
+      <a href="/af/rxbind.html">RX Bind</a>
+      <a href="/af/diag.html">Diagnostics</a>
+      <a href="/af/license.html">License</a>
+    </nav>
+
+    <h1>History</h1>
+
+    <div class="filters">
+      <button class="active" type="button">all</button>
+      <button type="button">success</button>
+      <button type="button">failure</button>
+    </div>
+
+    <section class="panel">
+      <table>
+        <thead>
+          <tr><th>#</th><th>Slot</th><th>Started</th><th>Duration</th><th>MCU UID</th><th>Result</th><th></th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>1</td><td>#2</td><td>2026-08-05 14:18:43</td><td>8.3 s</td><td>350022001150563131323932</td>
+            <td><span class="result success">success</span></td>
+            <td><span class="expand" onclick="toggle('d1')">details</span></td>
+          </tr>
+          <tr><td colspan="7"><div id="d1" class="detail hidden">
+            <div class="detail-row"><span>profile</span><span>arrow-flight-f405</span></div>
+            <div class="detail-row"><span>fc hash</span><span>sha256:9f4b2c…</span></div>
+            <div class="detail-row"><span>esc hash</span><span>sha256:1a7d3e…</span></div>
+            <div class="detail-row"><span>full MCU UID</span><span>350022001150563131323932</span></div>
+            <div class="detail-row"><span>started</span><span>2026-08-05T14:18:43.000Z</span></div>
+            <div class="detail-row"><span>finished</span><span>2026-08-05T14:18:51.300Z</span></div>
+            <div class="detail-row"><span>duration ms</span><span>8300</span></div>
+            <div class="detail-row"><span>esc signatures</span><span>4 ESCs detected</span></div>
+            <div class="detail-row"><span>esc actions</span><span>flash, verify</span></div>
+          </div></td></tr>
+          <tr>
+            <td>2</td><td>#1</td><td>2026-08-05 13:45:03</td><td>12.1 s</td><td>34001a001150563131323933</td>
+            <td><span class="result failure">failure</span></td>
+            <td><span class="expand" onclick="toggle('d2')">details</span></td>
+          </tr>
+          <tr><td colspan="7"><div id="d2" class="detail hidden">
+            <div class="detail-row"><span>profile</span><span>arrow-flight-f405</span></div>
+            <div class="detail-row"><span>error</span><span>DFU erase timeout at 0x08008000</span></div>
+            <div class="detail-row"><span>full MCU UID</span><span>34001a001150563131323933</span></div>
+            <div class="detail-row"><span>started</span><span>2026-08-05T13:45:03.000Z</span></div>
+            <div class="detail-row"><span>finished</span><span>2026-08-05T13:45:15.100Z</span></div>
+            <div class="detail-row"><span>duration ms</span><span>12100</span></div>
+          </div></td></tr>
+          <tr>
+            <td>3</td><td>#3</td><td>2026-08-05 12:11:18</td><td>9.6 s</td><td>3100ff001150563131323934</td>
+            <td><span class="result success">success</span></td>
+            <td><span class="expand" onclick="toggle('d3')">details</span></td>
+          </tr>
+          <tr><td colspan="7"><div id="d3" class="detail hidden">
+            <div class="detail-row"><span>profile</span><span>arrow-flight-f405</span></div>
+            <div class="detail-row"><span>full MCU UID</span><span>3100ff001150563131323934</span></div>
+            <div class="detail-row"><span>started</span><span>2026-08-05T12:11:18.000Z</span></div>
+            <div class="detail-row"><span>finished</span><span>2026-08-05T12:11:27.600Z</span></div>
+            <div class="detail-row"><span>duration ms</span><span>9600</span></div>
+          </div></td></tr>
+        </tbody>
+      </table>
+    </section>
+  </main>
+
+  <script>
+    function toggle(id) {
+      const el = document.getElementById(id);
+      if (el) el.classList.toggle('hidden');
+    }
+  </script>
+</body>
+</html>

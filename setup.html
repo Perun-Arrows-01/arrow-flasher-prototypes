@@ -1,0 +1,297 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Arrow Flasher — Settings</title>
+  <style>
+    :root {
+      --bg-page: #010409;
+      --bg-card: #0d1117;
+      --bg-input: #161b22;
+      --border: #30363d;
+      --border-subtle: #21262d;
+      --text: #c9d1d9;
+      --muted: #8b949e;
+      --green: #238636;
+      --green-soft: rgba(46,160,67,.14);
+      --green-text: #7ee787;
+      --red: #f85149;
+      --red-soft: #3d1418;
+      --red-text: #ffb4ab;
+      --amber: #d29922;
+      --amber-soft: rgba(213,153,34,.12);
+      --amber-text: #ffd78e;
+      --blue: #1f6feb;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: var(--bg-page); color: var(--text); font-family: var(--sans); font-size: 14px; }
+    body { padding: 24px 16px 48px; }
+    .app { width: min(1000px, 100%); margin: 0 auto; }
+    nav { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+    nav a { padding: 8px 16px; background: var(--bg-input); color: #fff; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; text-decoration: none; }
+    nav a.active { background: var(--blue); border-color: var(--blue); }
+    h1 { margin: 0 0 16px; font-size: 24px; font-weight: 600; }
+    h2 { margin: 0 0 12px; font-size: 18px; font-weight: 600; }
+    h3 { margin: 0 0 8px; font-size: 14px; font-weight: 600; color: var(--text); }
+    .panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+    .toolbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
+    .toolbar label { color: var(--muted); font-size: 13px; }
+    .select-wrap { position: relative; display: inline-flex; align-items: center; }
+    select {
+      appearance: none; -webkit-appearance: none; -moz-appearance: none;
+      min-height: 32px; padding: 6px 28px 6px 10px; background: var(--bg-input); color: var(--text); border: 1px solid var(--border); border-radius: 6px; font-size: 13px; cursor: pointer; min-width: 180px;
+    }
+    .select-wrap::after {
+      content: ''; position: absolute; right: 10px; width: 8px; height: 8px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg); pointer-events: none;
+    }
+    button { padding: 6px 12px; background: var(--bg-input); color: var(--text); border: 1px solid var(--border); border-radius: 6px; font-size: 13px; cursor: pointer; }
+    button.primary { background: var(--green-soft); color: var(--green-text); border-color: rgba(46,160,67,.42); font-weight: 600; }
+    button.danger { background: var(--red-soft); color: var(--red-text); border-color: rgba(248,81,73,.42); }
+    input[type="text"], input[type="number"], input[type="file"].fake-file { width: 100%; min-height: 32px; padding: 6px 10px; background: var(--bg-input); color: var(--text); border: 1px solid var(--border); border-radius: 6px; font: 13px var(--mono); outline: none; }
+    input[type="checkbox"] { accent-color: var(--blue); }
+    label { display: block; color: var(--muted); font-size: 13px; margin-bottom: 6px; margin-top: 12px; }
+    .row { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 12px; align-items: start; padding: 8px 0; border-bottom: 1px solid var(--border-subtle); }
+    .row:last-child { border-bottom: 0; }
+    .row .label { color: var(--muted); font-size: 13px; padding-top: 7px; }
+    .inline { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+    .inline label { margin: 0; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
+    .chip { display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border-radius: 12px; font-size: 12px; border: 1px solid var(--border); background: var(--bg-input); }
+    .section-title { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
+    .toggle { display: flex; align-items: center; gap: 8px; font-weight: 600; }
+    .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+    .motor-group { background: var(--bg-input); border: 1px solid var(--border); border-radius: 6px; padding: 10px; }
+    .motor-group label { margin-top: 0; }
+    .table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .table th { text-align: left; color: var(--muted); border-bottom: 1px solid var(--border); padding: 6px 8px; font-weight: 600; }
+    .table td { padding: 8px; border-bottom: 1px solid var(--border-subtle); }
+    .table input { width: 100%; }
+    .actions { display: flex; gap: 10px; justify-content: flex-end; margin-top: 16px; padding-top: 12px; border-top: 1px solid var(--border-subtle); }
+    .note { color: var(--muted); font-size: 12px; margin-top: 8px; }
+    .banner { border-radius: 8px; padding: 10px 14px; margin-bottom: 16px; font-size: 13px; }
+    .banner.amber { background: var(--amber-soft); border: 1px solid rgba(210,153,34,.42); color: var(--amber-text); }
+    .banner.amber strong { color: var(--amber); }
+    @media (max-width: 720px) { .row { grid-template-columns: 1fr; } .grid-2, .grid-4 { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <nav aria-label="Main navigation">
+      <a href="/af/dashboard.html">Dashboard</a>
+      <a href="/af/setup.html" class="active">Setup</a>
+      <a href="/af/history.html">History</a>
+      <a href="/af/rxbind.html">RX Bind</a>
+      <a href="/af/diag.html">Diagnostics</a>
+      <a href="/af/license.html">License</a>
+    </nav>
+
+    <h1>Settings</h1>
+
+    <div class="banner amber" role="status">
+      <strong>⚠ Discard unsaved changes</strong> — Template and slot edits are not saved until you press Save.
+    </div>
+
+    <!-- TemplatesBar -->
+    <section class="panel">
+      <div class="toolbar">
+        <label for="template">Active template</label>
+        <div class="select-wrap">
+          <select id="template">
+            <option>arrow-flight-f405</option>
+            <option>quad-x-default</option>
+            <option>fixed-wing-aio</option>
+          </select>
+        </div>
+        <button type="button">+ New</button>
+        <button type="button">+ New (FC-only)</button>
+        <button type="button" class="danger">Delete</button>
+      </div>
+      <div class="row">
+        <div class="label">Template name</div>
+        <div><input type="text" value="arrow-flight-f405" /></div>
+      </div>
+    </section>
+
+    <!-- FC firmware -->
+    <section class="panel">
+      <div class="section-title"><div class="toggle"><input type="checkbox" checked /> Flash FC firmware</div></div>
+      <div class="row">
+        <div class="label">FC firmware (.bin)</div>
+        <div>
+          <div class="inline" style="margin-bottom:8px;">
+            <div class="select-wrap"><select><option>arrowflight-f405-1.14.0.hex</option><option>betaflight_4.5.0_STM32F405.hex</option></select></div>
+            <button type="button">+ Upload .bin</button>
+          </div>
+          <input type="text" value="/opt/firmwares/arrowflight-f405-1.14.0.hex" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="label">Verify after flash</div>
+        <div class="inline"><label><input type="checkbox" checked /> Enabled</label></div>
+      </div>
+      <div class="row">
+        <div class="label">Force DFU if FC in normal mode</div>
+        <div class="inline"><label><input type="checkbox" /> Disabled</label></div>
+      </div>
+      <div class="row">
+        <div class="label">DFU loader</div>
+        <div class="inline">
+          <label><input type="radio" name="dfu" checked /> stm32cube</label>
+          <label><input type="radio" name="dfu" /> dfu-util</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="label">STM32 programmer path</div>
+        <div><input type="text" value="/usr/local/bin/STM32_Programmer_CLI" /></div>
+      </div>
+    </section>
+
+    <!-- ESC firmware -->
+    <section class="panel">
+      <div class="section-title"><div class="toggle"><input type="checkbox" checked /> Flash ESC firmware</div></div>
+      <div class="row">
+        <div class="label">ESC firmware (.hex)</div>
+        <div>
+          <div class="inline" style="margin-bottom:8px;">
+            <div class="select-wrap"><select><option>bluejay_0.21.0_A_X_5_48.hex</option><option>bluejay_0.21.0_A_X_5_24.hex</option></select></div>
+            <button type="button">Browse Bluejay…</button>
+            <button type="button">+ Upload .hex</button>
+          </div>
+          <input type="text" value="/opt/firmwares/bluejay_0.21.0_A_X_5_48.hex" />
+        </div>
+      </div>
+      <div class="row">
+        <div class="label">Verify after flash</div>
+        <div class="inline"><label><input type="checkbox" checked /> Enabled</label></div>
+      </div>
+      <div class="row">
+        <div class="label">Always re-flash (force mode)</div>
+        <div class="inline"><label><input type="checkbox" /> Disabled</label></div>
+      </div>
+      <div class="row">
+        <div class="label">PWM frequency</div>
+        <div class="inline">
+          <label><input type="radio" name="pwm" /> 24 kHz</label>
+          <label><input type="radio" name="pwm" checked /> 48 kHz</label>
+          <label><input type="radio" name="pwm" /> 96 kHz</label>
+        </div>
+      </div>
+      <div class="row">
+        <div class="label">Motor directions</div>
+        <div class="grid-4">
+          <div class="motor-group">
+            <label for="m1">Motor 1</label>
+            <div class="select-wrap"><select id="m1"><option>normal</option><option selected>reversed</option><option>bidirectional</option><option>bidirectional-reversed</option></select></div>
+          </div>
+          <div class="motor-group">
+            <label for="m2">Motor 2</label>
+            <div class="select-wrap"><select id="m2"><option selected>normal</option><option>reversed</option><option>bidirectional</option><option>bidirectional-reversed</option></select></div>
+          </div>
+          <div class="motor-group">
+            <label for="m3">Motor 3</label>
+            <div class="select-wrap"><select id="m3"><option selected>normal</option><option>reversed</option><option>bidirectional</option><option>bidirectional-reversed</option></select></div>
+          </div>
+          <div class="motor-group">
+            <label for="m4">Motor 4</label>
+            <div class="select-wrap"><select id="m4"><option>normal</option><option selected>reversed</option><option>bidirectional</option><option>bidirectional-reversed</option></select></div>
+          </div>
+        </div>
+      </div>
+      <div class="row">
+        <div class="label">Motor → ESC index map</div>
+        <div class="grid-4">
+          <div><label>Motor 1</label><input type="number" value="0" min="0" max="3" /></div>
+          <div><label>Motor 2</label><input type="number" value="1" min="0" max="3" /></div>
+          <div><label>Motor 3</label><input type="number" value="2" min="0" max="3" /></div>
+          <div><label>Motor 4</label><input type="number" value="3" min="0" max="3" /></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ELRS -->
+    <section class="panel">
+      <div class="section-title"><div class="toggle"><input type="checkbox" checked /> Write ELRS bind phrase</div></div>
+      <div class="row">
+        <div class="label">Required</div>
+        <div class="inline"><label><input type="checkbox" /> Disabled</label></div>
+      </div>
+      <div class="row">
+        <div class="label">Auto-discover UART</div>
+        <div class="inline"><label><input type="checkbox" checked /> Enabled</label></div>
+      </div>
+      <div class="row">
+        <div class="label">UART identifier</div>
+        <div><input type="number" value="2" min="0" max="255" disabled /></div>
+      </div>
+      <div class="row">
+        <div class="label">Bind phrase</div>
+        <div><input type="text" value="strily-peruna-01" /></div>
+      </div>
+      <div class="row">
+        <div class="label">Advanced timings</div>
+        <div class="grid-2">
+          <div><label>Ping timeout (ms)</label><input type="number" value="200" /></div>
+          <div><label>Ping retries</label><input type="number" value="10" /></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Motor test -->
+    <section class="panel">
+      <div class="section-title"><div class="toggle"><input type="checkbox" checked /> Motor direction-verification spin</div></div>
+      <div class="row">
+        <div class="label">Throttle (%)</div>
+        <div><input type="range" min="1" max="20" value="5" style="width:100%" /></div>
+      </div>
+      <div class="row">
+        <div class="label">Duration per motor (ms)</div>
+        <div><input type="number" value="300" /></div>
+      </div>
+      <div class="row">
+        <div class="label">Delay between motors (ms)</div>
+        <div><input type="number" value="100" /></div>
+      </div>
+    </section>
+
+    <!-- Betaflight autoconfig -->
+    <section class="panel">
+      <div class="section-title"><div class="toggle"><input type="checkbox" checked /> Betaflight autoconfig</div></div>
+      <p class="note">Applies mixer, motor outputs, serial ports, and receiver protocol after FC flash.</p>
+    </section>
+
+    <!-- Actions -->
+    <div class="actions">
+      <button type="button">Discard changes</button>
+      <button type="button" class="primary">Save template</button>
+    </div>
+
+    <!-- Slots editor -->
+    <section class="panel">
+      <h2>Slots</h2>
+      <table class="table">
+        <thead><tr><th>Slot #</th><th>USB path</th><th>Label</th><th></th></tr></thead>
+        <tbody>
+          <tr><td>1</td><td><input type="text" value="1-1" /></td><td><input type="text" value="workbench-left" /></td><td><button type="button" class="danger">Remove</button></td></tr>
+          <tr><td>2</td><td><input type="text" value="1-2" /></td><td><input type="text" value="workbench-right" /></td><td><button type="button" class="danger">Remove</button></td></tr>
+          <tr><td>3</td><td><input type="text" value="1-3" /></td><td><input type="text" value="rack-2" /></td><td><button type="button" class="danger">Remove</button></td></tr>
+          <tr><td>4</td><td><input type="text" value="1-4" /></td><td><input type="text" value="rack-3" /></td><td><button type="button" class="danger">Remove</button></td></tr>
+        </tbody>
+      </table>
+      <div class="actions" style="justify-content:flex-start;">
+        <button type="button">+ Add slot</button>
+        <button type="button" class="primary">Save slots</button>
+      </div>
+    </section>
+
+    <!-- System restart -->
+    <section class="panel">
+      <h2>System</h2>
+      <button type="button">Restart server</button>
+      <p class="note">Restart is allowed only when all slots are idle. You may force restart if stuck.</p>
+    </section>
+  </main>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Arrow Flasher — License (locked)</title>
+  <style>
+    :root {
+      --bg-page: #010409;
+      --bg-card: #0d1117;
+      --bg-input: #161b22;
+      --border: #30363d;
+      --border-subtle: #21262d;
+      --text: #c9d1d9;
+      --muted: #8b949e;
+      --green: #238636;
+      --green-soft: rgba(46,160,67,.14);
+      --green-text: #7ee787;
+      --red: #f85149;
+      --red-soft: #3d1418;
+      --red-text: #ffb4ab;
+      --amber: #d29922;
+      --amber-soft: rgba(213,153,34,.12);
+      --amber-text: #ffd78e;
+      --blue: #1f6feb;
+      --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
+      --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
+    }
+    * { box-sizing: border-box; }
+    html, body { margin: 0; min-height: 100%; background: var(--bg-page); color: var(--text); font-family: var(--sans); font-size: 14px; }
+    body { padding: 24px 16px 48px; }
+    .app { width: min(900px, 100%); margin: 0 auto; }
+    nav { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
+    nav a { padding: 8px 16px; background: var(--bg-input); color: #fff; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; text-decoration: none; }
+    nav a.active { background: var(--blue); border-color: var(--blue); }
+    h1 { margin: 0 0 16px; font-size: 24px; font-weight: 600; }
+    h2 { margin: 0 0 12px; font-size: 16px; font-weight: 600; }
+    .panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+    .banner { border-radius: 8px; padding: 10px 14px; margin-bottom: 16px; font-size: 13px; display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap; }
+    .banner.amber { background: var(--amber-soft); border: 1px solid rgba(210, 153, 34, 0.42); color: var(--amber-text); }
+    .banner strong { color: var(--amber); }
+    .banner.locked { background: var(--red-soft); border: 1px solid rgba(248, 81, 73, 0.42); color: var(--red-text); }
+    .banner.locked strong { color: var(--red); }
+    label { display: block; color: var(--muted); font-size: 13px; margin-bottom: 6px; }
+    input[type="text"], input[type="password"] {
+      width: 100%; min-height: 34px; padding: 6px 10px; background: var(--bg-input); color: var(--text); border: 1px solid var(--border); border-radius: 6px; font: 14px var(--mono); outline: none; margin-bottom: 10px;
+    }
+    input:disabled, select:disabled, button:disabled { opacity: 0.55; cursor: not-allowed; }
+    button[type="submit"] { padding: 7px 14px; background: var(--green-soft); color: var(--green-text); border: 1px solid rgba(46,160,67,.42); border-radius: 6px; font-size: 14px; font-weight: 600; cursor: pointer; }
+    .row { display: grid; grid-template-columns: 180px minmax(0, 1fr); gap: 12px; padding: 8px 0; border-bottom: 1px solid var(--border-subtle); }
+    .row:last-child { border-bottom: 0; }
+    .row .label { color: var(--muted); font-size: 13px; }
+    .row .value { font-family: var(--mono); font-size: 13px; word-break: break-all; }
+    .badges { display: flex; gap: 8px; flex-wrap: wrap; }
+    .badge { padding: 3px 8px; border-radius: 12px; font-size: 12px; font-family: var(--mono); background: var(--green-soft); color: var(--green-text); border: 1px solid rgba(46,160,67,.42); }
+    .badge.disabled { background: transparent; color: var(--muted); border: 1px solid var(--border); }
+    .feature-list { display: grid; gap: 8px; }
+    .feature { display: flex; gap: 8px; align-items: center; font-size: 13px; }
+    .feature .check { color: var(--green); }
+    .feature .cross { color: var(--muted); }
+    .feature.disabled { color: var(--muted); }
+    .admin-gate { display: flex; align-items: center; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-subtle); }
+    .admin-gate input { margin: 0; }
+    @media (max-width: 640px) { .row { grid-template-columns: 1fr; gap: 4px; } .banner { flex-direction: column; align-items: flex-start; } }
+  </style>
+</head>
+<body>
+  <main class="app">
+    <nav aria-label="Main navigation">
+      <a href="/af/dashboard.html">Dashboard</a>
+      <a href="/af/setup.html">Setup</a>
+      <a href="/af/history.html">History</a>
+      <a href="/af/rxbind.html">RX Bind</a>
+      <a href="/af/diag.html">Diagnostics</a>
+      <a href="/af/license.html" class="active">License</a>
+    </nav>
+
+    <h1>License</h1>
+
+    <div class="banner locked" role="alert">
+      <div><strong>🔒 License activation is temporarily locked.</strong> Contact the administrator to enable online activation. All fields below are read-only.</div>
+    </div>
+
+    <div class="banner amber" role="status">
+      <div><strong>⚠ Offline grace active</strong> — License valid, but online refresh failed. Protected operations allowed until 2026-06-23.</div>
+    </div>
+
+    <section class="panel">
+      <h2>Activation</h2>
+      <form onsubmit="event.preventDefault();">
+        <label for="licenseKey">License key</label>
+        <input id="licenseKey" type="text" value="" placeholder="AF-XXXX-XXXX-XXXX" disabled />
+        <button type="submit" disabled>Activate</button>
+      </form>
+    </section>
+
+    <section class="panel">
+      <h2>License details</h2>
+      <div class="row"><div class="label">License</div><div class="value">lic_flasher_org_01f3a8</div></div>
+      <div class="row"><div class="label">Organization</div><div class="value">org_strily_peruna</div></div>
+      <div class="row"><div class="label">Activation</div><div class="value">act_9c2e7d1b5f8a</div></div>
+      <div class="row"><div class="label">Machine fingerprint</div><div class="value">sha256:8f4a9c…e2d1 (hashed locally)</div></div>
+      <div class="row">
+        <div class="label">Features</div>
+        <div class="value badges">
+          <span class="badge">flashing</span>
+          <span class="badge">live_usb</span>
+          <span class="badge">history.export</span>
+        </div>
+      </div>
+      <div class="row"><div class="label">Issued</div><div class="value">2026-06-09T00:00:00Z</div></div>
+      <div class="row"><div class="label">Expires</div><div class="value">2026-07-09T00:00:00Z</div></div>
+      <div class="row"><div class="label">Offline grace</div><div class="value">2026-06-23T00:00:00Z</div></div>
+      <div class="row"><div class="label">Refresh after</div><div class="value">2026-06-16T00:00:00Z</div></div>
+    </section>
+
+    <section class="panel">
+      <h2>Feature flags</h2>
+      <div class="feature-list">
+        <div class="feature"><span class="check">✓</span> flash.fc</div>
+        <div class="feature"><span class="check">✓</span> flash.esc</div>
+        <div class="feature"><span class="check">✓</span> live_usb</div>
+        <div class="feature"><span class="check">✓</span> templates.manage</div>
+        <div class="feature"><span class="check">✓</span> history.export</div>
+        <div class="feature disabled"><span class="cross">—</span> wifi.bind</div>
+      </div>
+      <div class="admin-gate">
+        <input id="adminUnlock" type="checkbox" disabled />
+        <label for="adminUnlock" style="margin:0;">Unlock activation (admin only)</label>
+      </div>
+    </section>
+  </main>
+</body>
+</html>
