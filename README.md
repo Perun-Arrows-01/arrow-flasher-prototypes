@@ -2,12 +2,12 @@
 
 Live preview of the latest version:
 
-- **[Unified prototype (recommended)](https://colobocman.github.io/arrow-flasher-prototypes/app.html)**
-- [Dashboard](https://colobocman.github.io/arrow-flasher-prototypes/dashboard.html)
-- [Setup](https://colobocman.github.io/arrow-flasher-prototypes/setup.html)
-- [History](https://colobocman.github.io/arrow-flasher-prototypes/history.html)
-- [RX Bind](https://colobocman.github.io/arrow-flasher-prototypes/rxbind.html)
-- [Diagnostics](https://colobocman.github.io/arrow-flasher-prototypes/diag.html)
-- [License (locked)](https://colobocman.github.io/arrow-flasher-prototypes/license.html)
+- **[Unified prototype (recommended)](https://perun-arrows-01.github.io/arrow-flasher-prototypes/app.html)**
+- [Dashboard](https://perun-arrows-01.github.io/arrow-flasher-prototypes/dashboard.html)
+- [Setup](https://perun-arrows-01.github.io/arrow-flasher-prototypes/setup.html)
+- [History](https://perun-arrows-01.github.io/arrow-flasher-prototypes/history.html)
+- [RX Bind](https://perun-arrows-01.github.io/arrow-flasher-prototypes/rxbind.html)
+- [Diagnostics](https://perun-arrows-01.github.io/arrow-flasher-prototypes/diag.html)
+- [License (locked)](https://perun-arrows-01.github.io/arrow-flasher-prototypes/license.html)
 
 These are self-contained HTML mockups based on the real Arrow Flasher React/TypeScript sources.
