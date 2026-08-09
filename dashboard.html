@@ -94,6 +94,9 @@
     .big-banner.error { background: var(--red-soft); color: var(--red-text); border: 1px solid rgba(248,81,73,.42); }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
     @media (max-width: 720px) { .header { flex-direction: column; } .summary { flex-direction: column; align-items: flex-start; } }
+      /* P0 a11y: visible keyboard focus */
+    :focus-visible { outline: 2px solid var(--blue, #1f6feb); outline-offset: 2px; }
+    input[type="checkbox"]:focus-visible, input[type="radio"]:focus-visible { outline-offset: 3px; }
   </style>
 </head>
 <body>
@@ -134,10 +137,10 @@
     </div>
 
     <div class="banner green" role="status"><strong>✅ Server ready</strong> — All subsystems operational.</div>
-    <div class="banner blue" role="status"><strong>ℹ Mismatch</strong> — Slot 3 plugged drone matches template <strong>quad-x-default</strong>. <span class="banner-actions"><button type="button">Switch to quad-x-default</button><button type="button">Dismiss</button><button type="button">Reboot to DFU</button></span></div>
-    <div class="banner amber" role="status"><strong>⚠ Unclaimed plug</strong> — USB 1-4.1 unrecognized. <span class="banner-actions"><button type="button">Claim</button><button type="button">Dismiss</button></span></div>
+    <div class="banner blue" role="alert"><strong>ℹ Mismatch</strong> — Slot 3 plugged drone matches template <strong>quad-x-default</strong>. <span class="banner-actions"><button type="button">Switch to quad-x-default</button><button type="button">Dismiss</button><button type="button">Reboot to DFU</button></span></div>
+    <div class="banner amber" role="alert"><strong>⚠ Unclaimed plug</strong> — USB 1-4.1 unrecognized. <span class="banner-actions"><button type="button">Claim</button><button type="button">Dismiss</button></span></div>
 
-    <div class="slot-grid">
+    <div class="slot-grid" aria-live="polite">
       <!-- EMPTY -->
       <div class="slot-card">
         <div class="slot-header"><span class="slot-label">1-1.1</span><span class="slot-number">#1</span></div>

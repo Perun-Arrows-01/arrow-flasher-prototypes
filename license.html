@@ -62,6 +62,9 @@
     .admin-gate { display: flex; align-items: center; gap: 8px; margin-top: 12px; padding-top: 12px; border-top: 1px solid var(--border-subtle); }
     .admin-gate input { margin: 0; }
     @media (max-width: 640px) { .row { grid-template-columns: 1fr; gap: 4px; } .banner { flex-direction: column; align-items: flex-start; } }
+      /* P0 a11y: visible keyboard focus */
+    :focus-visible { outline: 2px solid var(--blue, #1f6feb); outline-offset: 2px; }
+    input[type="checkbox"]:focus-visible, input[type="radio"]:focus-visible { outline-offset: 3px; }
   </style>
 </head>
 <body>

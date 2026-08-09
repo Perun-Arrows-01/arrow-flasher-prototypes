@@ -54,6 +54,9 @@
     button:disabled { opacity: 0.55; cursor: not-allowed; }
     .status { color: var(--muted); font-size: 13px; margin-top: 8px; }
     .meta { color: var(--muted); font-size: 12px; margin-bottom: 8px; }
+      /* P0 a11y: visible keyboard focus */
+    :focus-visible { outline: 2px solid var(--blue, #1f6feb); outline-offset: 2px; }
+    input[type="checkbox"]:focus-visible, input[type="radio"]:focus-visible { outline-offset: 3px; }
   </style>
 </head>
 <body>
@@ -84,7 +87,7 @@
       <section class="section">
         <h2>ESC error dumps (latest 200)</h2>
         <table aria-label="ESC error dumps">
-          <thead><tr><th>When</th><th>Slot</th><th>ESC</th><th>UID</th><th>Size</th><th>File</th></tr></thead>
+          <thead><tr><th scope="col">When</th><th scope="col">Slot</th><th scope="col">ESC</th><th scope="col">UID</th><th scope="col">Size</th><th scope="col">File</th></tr></thead>
           <tbody>
             <tr><td>2026-08-05 14:18:43</td><td>2</td><td>2</td><td>350022001150563131323932</td><td>1.2 kB</td><td><a href="#">download</a></td></tr>
             <tr><td>2026-08-05 13:45:03</td><td>2</td><td>1</td><td>34001a001150563131323933</td><td>856 B</td><td><a href="#">download</a></td></tr>

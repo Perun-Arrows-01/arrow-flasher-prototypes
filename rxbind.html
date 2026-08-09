@@ -64,6 +64,9 @@
     .section:first-child { margin-top: 0; }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     @media (max-width: 720px) { .grid-2 { grid-template-columns: 1fr; } .inline { flex-direction: column; align-items: flex-start; } }
+      /* P0 a11y: visible keyboard focus */
+    :focus-visible { outline: 2px solid var(--blue, #1f6feb); outline-offset: 2px; }
+    input[type="checkbox"]:focus-visible, input[type="radio"]:focus-visible { outline-offset: 3px; }
   </style>
 </head>
 <body>
@@ -95,8 +98,8 @@
         <button type="button" class="primary">Scan for RX APs</button>
         <span class="note">Last scan: 2026-08-05 14:20:33</span>
       </div>
-      <table>
-        <thead><tr><th><input type="checkbox" /></th><th>SSID</th><th>Signal</th><th>Protocol</th></tr></thead>
+      <table aria-label="Discovered receivers">
+        <thead><tr><th scope="col"><input type="checkbox" aria-label="Select all receivers" /></th><th scope="col">SSID</th><th scope="col">Signal</th><th scope="col">Protocol</th></tr></thead>
         <tbody>
           <tr><td><input type="checkbox" /></td><td>ExpressLRS-5G-01</td><td>-42 dBm</td><td>ELRS 3.0</td></tr>
           <tr><td><input type="checkbox" /></td><td>ExpressLRS-5G-02</td><td>-58 dBm</td><td>ELRS 3.0</td></tr>
@@ -128,8 +131,8 @@
     <!-- In progress / latest cycle -->
     <section class="panel">
       <h2>Latest cycle</h2>
-      <table>
-        <thead><tr><th>RX</th><th>Bind phrase</th><th>Status</th><th>Started</th></tr></thead>
+      <table aria-label="Bind progress">
+        <thead><tr><th scope="col">RX</th><th scope="col">Bind phrase</th><th scope="col">Status</th><th scope="col">Started</th></tr></thead>
         <tbody>
           <tr><td>ExpressLRS-5G-01</td><td>******</td><td>done</td><td>2026-08-05 14:18:43</td></tr>
           <tr><td>ExpressLRS-5G-02</td><td>******</td><td>done</td><td>2026-08-05 14:18:52</td></tr>
@@ -140,8 +143,8 @@
     <!-- Recent binds -->
     <section class="panel">
       <h2>Recent binds</h2>
-      <table>
-        <thead><tr><th>When</th><th>RX</th><th>Result</th></tr></thead>
+      <table aria-label="Recent binds">
+        <thead><tr><th scope="col">When</th><th scope="col">RX</th><th scope="col">Result</th></tr></thead>
         <tbody>
           <tr><td>2026-08-05 14:18:43</td><td>ExpressLRS-5G-01</td><td>OK</td></tr>
           <tr><td>2026-08-05 14:18:52</td><td>ExpressLRS-5G-02</td><td>OK</td></tr>

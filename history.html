@@ -50,6 +50,9 @@
     .hidden { display: none; }
     a { color: #58a6ff; text-decoration: none; }
     a:hover { text-decoration: underline; }
+      /* P0 a11y: visible keyboard focus */
+    :focus-visible { outline: 2px solid var(--blue, #1f6feb); outline-offset: 2px; }
+    input[type="checkbox"]:focus-visible, input[type="radio"]:focus-visible { outline-offset: 3px; }
   </style>
 </head>
 <body>
@@ -63,9 +66,9 @@
     </div>
 
     <section class="panel">
-      <table>
+      <table aria-label="Flash history">
         <thead>
-          <tr><th>#</th><th>Slot</th><th>Started</th><th>Duration</th><th>MCU UID</th><th>Result</th><th></th></tr>
+          <tr><th scope="col">#</th><th scope="col">Slot</th><th scope="col">Started</th><th scope="col">Duration</th><th scope="col">MCU UID</th><th scope="col">Result</th><th></th></tr>
         </thead>
         <tbody>
           <tr>
