@@ -5,12 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Arrow Flasher — Settings</title>
   <style>
+    [hidden] { display: none !important; }
     :root {
       --bg-page: #010409;
       --bg-card: #0d1117;
       --bg-input: #161b22;
-      --border: #30363d;
-      --border-subtle: #21262d;
+      --border: #3d444d;
+      --border-subtle: #2b313a;
       --text: #c9d1d9;
       --muted: #8b949e;
       --green: #238636;
@@ -30,42 +31,44 @@
     html, body { margin: 0; min-height: 100%; background: var(--bg-page); color: var(--text); font-family: var(--sans); font-size: 14px; }
     body { padding: 24px 16px 48px; }
     .app { width: min(1000px, 100%); margin: 0 auto; }
-    nav { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
-    nav a { padding: 8px 16px; background: var(--bg-input); color: #fff; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; text-decoration: none; }
-    nav a.active { background: var(--blue); border-color: var(--blue); }
     h1 { margin: 0 0 16px; font-size: 24px; font-weight: 600; }
-    h2 { margin: 0 0 12px; font-size: 18px; font-weight: 600; }
-    h3 { margin: 0 0 8px; font-size: 14px; font-weight: 600; color: var(--text); }
-    .panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 16px; }
-    .toolbar { display: flex; gap: 8px; align-items: center; flex-wrap: wrap; margin-bottom: 12px; }
-    .toolbar label { color: var(--muted); font-size: 13px; }
-    .select-wrap { position: relative; display: inline-flex; align-items: center; }
-    select {
-      appearance: none; -webkit-appearance: none; -moz-appearance: none;
-      min-height: 32px; padding: 6px 28px 6px 10px; background: var(--bg-input); color: var(--text); border: 1px solid var(--border); border-radius: 6px; font-size: 13px; cursor: pointer; min-width: 180px;
-    }
-    .select-wrap::after {
-      content: ''; position: absolute; right: 10px; width: 8px; height: 8px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg); pointer-events: none;
-    }
-    button { padding: 6px 12px; background: var(--bg-input); color: var(--text); border: 1px solid var(--border); border-radius: 6px; font-size: 13px; cursor: pointer; }
+    h2 { margin: 0; font-size: 18px; font-weight: 600; }
+    h3 { margin: 0 0 12px; font-size: 14px; font-weight: 600; color: var(--text); }
+    .panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 16px; box-shadow: inset 0 1px 0 rgba(255,255,255,.02); }
+    details.panel { padding: 0; overflow: clip; }
+    details.panel > summary { list-style: none; cursor: pointer; padding: 16px; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+    details.panel > summary::-webkit-details-marker { display: none; }
+    details.panel > summary::after { content: '▾'; color: var(--muted); }
+    details.panel[open] > summary::after { content: '▴'; }
+    details.panel > .panel-body { padding: 0 16px 16px; }
+    .locked-banner { border-radius: 8px; padding: 10px 14px; margin-bottom: 16px; border: 1px solid rgba(210,153,34,.42); background: var(--amber-soft); color: var(--amber-text); }
+    .locked-banner strong { color: var(--amber); }
+    .sticky-bar { position: sticky; top: 0; z-index: 20; display: flex; gap: 12px; justify-content: space-between; align-items: center; padding: 12px 16px; margin-bottom: 16px; background: rgba(1,4,9,.96); border: 1px solid var(--border); border-radius: 10px; backdrop-filter: blur(4px); box-shadow: inset 0 1px 0 rgba(255,255,255,.02); }
+    .sticky-bar .state { display: flex; flex-direction: column; gap: 2px; }
+    .dirty { color: var(--amber-text); font-weight: 600; }
+    .clean { color: var(--green-text); }
+    .sticky-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    button { min-height: 44px; padding: 8px 12px; background: var(--bg-input); color: var(--text); border: 1px solid var(--border); border-radius: 6px; font-size: 13px; cursor: pointer; box-shadow: inset 0 1px 0 rgba(255,255,255,.02); }
     button.primary { background: var(--green-soft); color: var(--green-text); border-color: rgba(46,160,67,.42); font-weight: 600; }
     button.danger { background: var(--red-soft); color: var(--red-text); border-color: rgba(248,81,73,.42); }
-    input[type="text"], input[type="number"], input[type="file"].fake-file { width: 100%; min-height: 32px; padding: 6px 10px; background: var(--bg-input); color: var(--text); border: 1px solid var(--border); border-radius: 6px; font: 13px var(--mono); outline: none; }
-    input[type="checkbox"] { accent-color: var(--blue); }
+    button:disabled { opacity: 0.55; cursor: not-allowed; }
+    input[type="text"], input[type="number"], input[type="file"].fake-file { width: 100%; min-height: 44px; padding: 8px 12px; background: var(--bg-input); color: var(--text); border: 1px solid var(--border); border-radius: 6px; font: 13px var(--mono); outline: none; box-shadow: inset 0 1px 0 rgba(255,255,255,.02); }
+    input[type="checkbox"], input[type="radio"] { accent-color: var(--blue); }
     label { display: block; color: var(--muted); font-size: 13px; margin-bottom: 6px; margin-top: 12px; }
     .row { display: grid; grid-template-columns: 220px minmax(0, 1fr); gap: 12px; align-items: start; padding: 8px 0; border-bottom: 1px solid var(--border-subtle); }
     .row:last-child { border-bottom: 0; }
     .row .label { color: var(--muted); font-size: 13px; padding-top: 7px; }
     .inline { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
     .inline label { margin: 0; display: inline-flex; align-items: center; gap: 6px; cursor: pointer; }
-    .chip { display: inline-flex; align-items: center; gap: 6px; padding: 2px 8px; border-radius: 12px; font-size: 12px; border: 1px solid var(--border); background: var(--bg-input); }
+    .chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; border-radius: 12px; font-size: 12px; border: 1px solid var(--border); background: var(--bg-input); }
     .section-title { display: flex; align-items: center; gap: 10px; margin-bottom: 12px; }
     .toggle { display: flex; align-items: center; gap: 8px; font-weight: 600; }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
     .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
     .motor-group { background: var(--bg-input); border: 1px solid var(--border); border-radius: 6px; padding: 10px; }
     .motor-group label { margin-top: 0; }
-    .table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .table-wrap { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+    .table { width: 100%; min-width: 760px; border-collapse: collapse; font-size: 13px; }
     .table th { text-align: left; color: var(--muted); border-bottom: 1px solid var(--border); padding: 6px 8px; font-weight: 600; }
     .table td { padding: 8px; border-bottom: 1px solid var(--border-subtle); }
     .table input { width: 100%; }
@@ -74,8 +77,17 @@
     .banner { border-radius: 8px; padding: 10px 14px; margin-bottom: 16px; font-size: 13px; }
     .banner.amber { background: var(--amber-soft); border: 1px solid rgba(210,153,34,.42); color: var(--amber-text); }
     .banner.amber strong { color: var(--amber-text); font-weight: 600; }
-    @media (max-width: 720px) { .row { grid-template-columns: 1fr; } .grid-2, .grid-4 { grid-template-columns: 1fr; } }
-      /* P0 a11y: visible keyboard focus */
+    .banner.ok { background: var(--green-soft); border: 1px solid rgba(46,160,67,.42); color: var(--green-text); }
+    .banner.ok strong { color: var(--green); }
+    .banner.err { background: var(--red-soft); border: 1px solid rgba(248,81,73,.42); color: var(--red-text); }
+    .banner.err strong { color: var(--red); }
+    .toast { margin-bottom: 16px; }
+    .dialog-backdrop { position: fixed; inset: 0; background: rgba(1,4,9,.72); display: grid; place-items: center; padding: 16px; z-index: 40; }
+    .dialog { width: min(440px, 100%); background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; box-shadow: 0 16px 40px rgba(0,0,0,.5); }
+    .dialog h2 { margin-bottom: 8px; font-size: 18px; }
+    .dialog p { margin: 0 0 14px; color: var(--muted); }
+    .dialog-actions { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+    @media (max-width: 720px) { .row { grid-template-columns: 1fr; } .grid-2, .grid-4 { grid-template-columns: 1fr; } .sticky-bar { flex-direction: column; align-items: flex-start; } .actions { justify-content: stretch; flex-direction: column; } .actions button { width: 100%; } }
     :focus-visible { outline: 2px solid var(--blue, #1f6feb); outline-offset: 2px; }
     input[type="checkbox"]:focus-visible, input[type="radio"]:focus-visible { outline-offset: 3px; }
   </style>
@@ -83,209 +95,293 @@
 <body>
   <main class="app">
     <h1>Settings</h1>
-
-    <div class="banner amber" role="alert">
-      <strong>⚠ Discard unsaved changes</strong> — Template and slot edits are not saved until you press Save.
+    <div class="locked-banner" role="alert">
+      <strong>🔒 License activation is temporarily locked.</strong> The prototype keeps all fields visible but read-only on the License page.
     </div>
 
-    <!-- TemplatesBar -->
-    <section class="panel">
-      <div class="toolbar">
-        <label for="template">Active template</label>
-        <div class="select-wrap">
-          <select id="template">
-            <option>arrow-flight-f405</option>
-            <option>quad-x-default</option>
-            <option>fixed-wing-aio</option>
-          </select>
-        </div>
-        <button type="button">+ New</button>
-        <button type="button">+ New (FC-only)</button>
-        <button type="button" class="danger">Delete</button>
+    <div class="sticky-bar" aria-live="polite">
+      <div class="state">
+        <span id="dirty-state" class="clean">No unsaved changes</span>
+        <span id="sticky-hint" style="color:var(--muted);font-size:12px;">Edits stay local to this mock UI.</span>
       </div>
-      <div class="row">
-        <div class="label">Template name</div>
-        <div><input type="text" value="arrow-flight-f405" /></div>
+      <div class="sticky-actions">
+        <button type="button" id="save-btn" class="primary">Save</button>
+        <button type="button" id="discard-btn">Discard</button>
       </div>
-    </section>
-
-    <!-- FC firmware -->
-    <section class="panel">
-      <div class="section-title"><div class="toggle"><input type="checkbox" checked /> Flash FC firmware</div></div>
-      <div class="row">
-        <div class="label">FC firmware (.bin)</div>
-        <div>
-          <div class="inline" style="margin-bottom:8px;">
-            <div class="select-wrap"><select><option>arrowflight-f405-1.14.0.hex</option><option>betaflight_4.5.0_STM32F405.hex</option></select></div>
-            <button type="button">+ Upload .bin</button>
-          </div>
-          <input type="text" value="/opt/firmwares/arrowflight-f405-1.14.0.hex" />
-        </div>
-      </div>
-      <div class="row">
-        <div class="label">Verify after flash</div>
-        <div class="inline"><label><input type="checkbox" checked /> Enabled</label></div>
-      </div>
-      <div class="row">
-        <div class="label">Force DFU if FC in normal mode</div>
-        <div class="inline"><label><input type="checkbox" /> Disabled</label></div>
-      </div>
-      <div class="row">
-        <div class="label">DFU loader</div>
-        <div class="inline">
-          <label><input type="radio" name="dfu" checked /> stm32cube</label>
-          <label><input type="radio" name="dfu" /> dfu-util</label>
-        </div>
-      </div>
-      <div class="row">
-        <div class="label">STM32 programmer path</div>
-        <div><input type="text" value="/usr/local/bin/STM32_Programmer_CLI" /></div>
-      </div>
-    </section>
-
-    <!-- ESC firmware -->
-    <section class="panel">
-      <div class="section-title"><div class="toggle"><input type="checkbox" checked /> Flash ESC firmware</div></div>
-      <div class="row">
-        <div class="label">ESC firmware (.hex)</div>
-        <div>
-          <div class="inline" style="margin-bottom:8px;">
-            <div class="select-wrap"><select><option>bluejay_0.21.0_A_X_5_48.hex</option><option>bluejay_0.21.0_A_X_5_24.hex</option></select></div>
-            <button type="button">Browse Bluejay…</button>
-            <button type="button">+ Upload .hex</button>
-          </div>
-          <input type="text" value="/opt/firmwares/bluejay_0.21.0_A_X_5_48.hex" />
-        </div>
-      </div>
-      <div class="row">
-        <div class="label">Verify after flash</div>
-        <div class="inline"><label><input type="checkbox" checked /> Enabled</label></div>
-      </div>
-      <div class="row">
-        <div class="label">Always re-flash (force mode)</div>
-        <div class="inline"><label><input type="checkbox" /> Disabled</label></div>
-      </div>
-      <div class="row">
-        <div class="label">PWM frequency</div>
-        <div class="inline">
-          <label><input type="radio" name="pwm" /> 24 kHz</label>
-          <label><input type="radio" name="pwm" checked /> 48 kHz</label>
-          <label><input type="radio" name="pwm" /> 96 kHz</label>
-        </div>
-      </div>
-      <div class="row">
-        <div class="label">Motor directions</div>
-        <div class="grid-4">
-          <div class="motor-group">
-            <label for="m1">Motor 1</label>
-            <div class="select-wrap"><select id="m1"><option>normal</option><option selected>reversed</option><option>bidirectional</option><option>bidirectional-reversed</option></select></div>
-          </div>
-          <div class="motor-group">
-            <label for="m2">Motor 2</label>
-            <div class="select-wrap"><select id="m2"><option selected>normal</option><option>reversed</option><option>bidirectional</option><option>bidirectional-reversed</option></select></div>
-          </div>
-          <div class="motor-group">
-            <label for="m3">Motor 3</label>
-            <div class="select-wrap"><select id="m3"><option selected>normal</option><option>reversed</option><option>bidirectional</option><option>bidirectional-reversed</option></select></div>
-          </div>
-          <div class="motor-group">
-            <label for="m4">Motor 4</label>
-            <div class="select-wrap"><select id="m4"><option>normal</option><option selected>reversed</option><option>bidirectional</option><option>bidirectional-reversed</option></select></div>
-          </div>
-        </div>
-      </div>
-      <div class="row">
-        <div class="label">Motor → ESC index map</div>
-        <div class="grid-4">
-          <div><label>Motor 1</label><input type="number" value="0" min="0" max="3" /></div>
-          <div><label>Motor 2</label><input type="number" value="1" min="0" max="3" /></div>
-          <div><label>Motor 3</label><input type="number" value="2" min="0" max="3" /></div>
-          <div><label>Motor 4</label><input type="number" value="3" min="0" max="3" /></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- ELRS -->
-    <section class="panel">
-      <div class="section-title"><div class="toggle"><input type="checkbox" checked /> Write ELRS bind phrase</div></div>
-      <div class="row">
-        <div class="label">Required</div>
-        <div class="inline"><label><input type="checkbox" /> Disabled</label></div>
-      </div>
-      <div class="row">
-        <div class="label">Auto-discover UART</div>
-        <div class="inline"><label><input type="checkbox" checked /> Enabled</label></div>
-      </div>
-      <div class="row">
-        <div class="label">UART identifier</div>
-        <div><input type="number" value="2" min="0" max="255" disabled /></div>
-      </div>
-      <div class="row">
-        <div class="label">Bind phrase</div>
-        <div><input type="text" value="strily-peruna-01" /></div>
-      </div>
-      <div class="row">
-        <div class="label">Advanced timings</div>
-        <div class="grid-2">
-          <div><label>Ping timeout (ms)</label><input type="number" value="200" /></div>
-          <div><label>Ping retries</label><input type="number" value="10" /></div>
-        </div>
-      </div>
-    </section>
-
-    <!-- Motor test -->
-    <section class="panel">
-      <div class="section-title"><div class="toggle"><input type="checkbox" checked /> Motor direction-verification spin</div></div>
-      <div class="row">
-        <div class="label">Throttle (%)</div>
-        <div><input type="range" min="1" max="20" value="5" style="width:100%" /></div>
-      </div>
-      <div class="row">
-        <div class="label">Duration per motor (ms)</div>
-        <div><input type="number" value="300" /></div>
-      </div>
-      <div class="row">
-        <div class="label">Delay between motors (ms)</div>
-        <div><input type="number" value="100" /></div>
-      </div>
-    </section>
-
-    <!-- Betaflight autoconfig -->
-    <section class="panel">
-      <div class="section-title"><div class="toggle"><input type="checkbox" checked /> Betaflight autoconfig</div></div>
-      <p class="note">Applies mixer, motor outputs, serial ports, and receiver protocol after FC flash.</p>
-    </section>
-
-    <!-- Actions -->
-    <div class="actions">
-      <button type="button">Discard changes</button>
-      <button type="button" class="primary">Save template</button>
     </div>
 
-    <!-- Slots editor -->
-    <section class="panel">
-      <h2>Slots</h2>
-      <table class="table">
-        <thead><tr><th scope="col">Slot #</th><th scope="col">USB path</th><th scope="col">Label</th><th></th></tr></thead>
-        <tbody>
-          <tr><td>1</td><td><input type="text" value="1-1" /></td><td><input type="text" value="workbench-left" /></td><td><button type="button" class="danger">Remove</button></td></tr>
-          <tr><td>2</td><td><input type="text" value="1-2" /></td><td><input type="text" value="workbench-right" /></td><td><button type="button" class="danger">Remove</button></td></tr>
-          <tr><td>3</td><td><input type="text" value="1-3" /></td><td><input type="text" value="rack-2" /></td><td><button type="button" class="danger">Remove</button></td></tr>
-          <tr><td>4</td><td><input type="text" value="1-4" /></td><td><input type="text" value="rack-3" /></td><td><button type="button" class="danger">Remove</button></td></tr>
-        </tbody>
-      </table>
-      <div class="actions" style="justify-content:flex-start;">
-        <button type="button">+ Add slot</button>
-        <button type="button" class="primary">Save slots</button>
-      </div>
-    </section>
+    <div id="setup-feedback" class="banner ok toast" role="status" aria-live="polite">Ready.</div>
 
-    <!-- System restart -->
-    <section class="panel">
-      <h2>System</h2>
-      <button type="button">Restart server</button>
-      <p class="note">Restart is allowed only when all slots are idle. You may force restart if stuck.</p>
-    </section>
+    <form id="settings-form">
+      <details class="panel" open>
+        <summary><h2>Templates</h2></summary>
+        <div class="panel-body">
+          <div class="section-title"><div class="toggle"><span>Template controls</span></div></div>
+          <div class="row">
+            <div class="label">Active template</div>
+            <div class="inline">
+              <select id="template" name="template" style="min-width:220px;">
+                <option>arrow-flight-f405</option>
+                <option>quad-x-default</option>
+                <option>fixed-wing-aio</option>
+              </select>
+              <button type="button" class="danger" data-confirm-action="Delete template" data-feedback="Template delete simulated. No file was removed.">Delete</button>
+            </div>
+          </div>
+          <div class="row">
+            <div class="label">Template name</div>
+            <div><input type="text" value="arrow-flight-f405" /></div>
+          </div>
+          <div class="actions" style="justify-content:flex-start;">
+            <button type="button">+ New</button>
+            <button type="button">+ New (FC-only)</button>
+          </div>
+        </div>
+      </details>
+
+      <details class="panel" open>
+        <summary><h2>FC firmware</h2></summary>
+        <div class="panel-body">
+          <div class="section-title"><div class="toggle"><input type="checkbox" checked /> Flash FC firmware</div></div>
+          <div class="row">
+            <div class="label">FC firmware (.bin)</div>
+            <div>
+              <div class="inline" style="margin-bottom:8px;">
+                <div class="select-wrap"><select><option>arrowflight-f405-1.14.0.hex</option><option>betaflight_4.5.0_STM32F405.hex</option></select></div>
+                <button type="button">+ Upload .bin</button>
+              </div>
+              <input type="text" value="/opt/firmwares/arrowflight-f405-1.14.0.hex" />
+            </div>
+          </div>
+          <div class="row"><div class="label">Verify after flash</div><div class="inline"><label><input type="checkbox" checked /> Enabled</label></div></div>
+          <div class="row"><div class="label">Force DFU if FC in normal mode</div><div class="inline"><label><input type="checkbox" /> Disabled</label></div></div>
+          <div class="row">
+            <div class="label">DFU loader</div>
+            <div class="inline">
+              <label><input type="radio" name="dfu" checked /> stm32cube</label>
+              <label><input type="radio" name="dfu" /> dfu-util</label>
+            </div>
+          </div>
+          <div class="row"><div class="label">STM32 programmer path</div><div><input type="text" value="/usr/local/bin/STM32_Programmer_CLI" /></div></div>
+        </div>
+      </details>
+
+      <details class="panel" open>
+        <summary><h2>ESC firmware</h2></summary>
+        <div class="panel-body">
+          <div class="section-title"><div class="toggle"><input type="checkbox" checked /> Flash ESC firmware</div></div>
+          <div class="row">
+            <div class="label">ESC firmware (.hex)</div>
+            <div>
+              <div class="inline" style="margin-bottom:8px;">
+                <div class="select-wrap"><select><option>bluejay_0.21.0_A_X_5_48.hex</option><option>bluejay_0.21.0_A_X_5_24.hex</option></select></div>
+                <button type="button">Browse Bluejay…</button>
+                <button type="button">+ Upload .hex</button>
+              </div>
+              <input type="text" value="/opt/firmwares/bluejay_0.21.0_A_X_5_48.hex" />
+            </div>
+          </div>
+          <div class="row"><div class="label">Verify after flash</div><div class="inline"><label><input type="checkbox" checked /> Enabled</label></div></div>
+          <div class="row"><div class="label">Always re-flash (force mode)</div><div class="inline"><label><input type="checkbox" /> Disabled</label></div></div>
+          <div class="row">
+            <div class="label">PWM frequency</div>
+            <div class="inline">
+              <label><input type="radio" name="pwm" /> 24 kHz</label>
+              <label><input type="radio" name="pwm" checked /> 48 kHz</label>
+              <label><input type="radio" name="pwm" /> 96 kHz</label>
+            </div>
+          </div>
+          <div class="row">
+            <div class="label">Motor directions</div>
+            <div class="grid-4">
+              <div class="motor-group"><label for="m1">Motor 1</label><select id="m1"><option>normal</option><option selected>reversed</option><option>bidirectional</option><option>bidirectional-reversed</option></select></div>
+              <div class="motor-group"><label for="m2">Motor 2</label><select id="m2"><option selected>normal</option><option>reversed</option><option>bidirectional</option><option>bidirectional-reversed</option></select></div>
+              <div class="motor-group"><label for="m3">Motor 3</label><select id="m3"><option selected>normal</option><option>reversed</option><option>bidirectional</option><option>bidirectional-reversed</option></select></div>
+              <div class="motor-group"><label for="m4">Motor 4</label><select id="m4"><option>normal</option><option selected>reversed</option><option>bidirectional</option><option>bidirectional-reversed</option></select></div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="label">Motor → ESC index map</div>
+            <div class="grid-4">
+              <div><label>Motor 1</label><input type="number" value="0" min="0" max="3" /></div>
+              <div><label>Motor 2</label><input type="number" value="1" min="0" max="3" /></div>
+              <div><label>Motor 3</label><input type="number" value="2" min="0" max="3" /></div>
+              <div><label>Motor 4</label><input type="number" value="3" min="0" max="3" /></div>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <details class="panel" open>
+        <summary><h2>ELRS</h2></summary>
+        <div class="panel-body">
+          <div class="section-title"><div class="toggle"><input type="checkbox" checked /> Write ELRS bind phrase</div></div>
+          <div class="row"><div class="label">Required</div><div class="inline"><label><input type="checkbox" /> Disabled</label></div></div>
+          <div class="row"><div class="label">Auto-discover UART</div><div class="inline"><label><input type="checkbox" checked /> Enabled</label></div></div>
+          <div class="row"><div class="label">UART identifier</div><div><input type="number" value="2" min="0" max="255" disabled /></div></div>
+          <div class="row"><div class="label">Bind phrase</div><div><input type="text" value="strily-peruna-01" /></div></div>
+          <div class="row">
+            <div class="label">Advanced timings</div>
+            <div class="grid-2">
+              <div><label>Ping timeout (ms)</label><input type="number" value="200" /></div>
+              <div><label>Ping retries</label><input type="number" value="10" /></div>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <details class="panel" open>
+        <summary><h2>Motor test</h2></summary>
+        <div class="panel-body">
+          <div class="section-title"><div class="toggle"><input type="checkbox" checked /> Motor direction-verification spin</div></div>
+          <div class="row"><div class="label">Throttle (%)</div><div><input type="range" min="1" max="20" value="5" style="width:100%" /></div></div>
+          <div class="row"><div class="label">Duration per motor (ms)</div><div><input type="number" value="300" /></div></div>
+          <div class="row"><div class="label">Delay between motors (ms)</div><div><input type="number" value="100" /></div></div>
+        </div>
+      </details>
+
+      <details class="panel" open>
+        <summary><h2>Betaflight autoconfig</h2></summary>
+        <div class="panel-body">
+          <div class="section-title"><div class="toggle"><input type="checkbox" checked /> Betaflight autoconfig</div></div>
+          <p class="note">Applies mixer, motor outputs, serial ports, and receiver protocol after FC flash.</p>
+        </div>
+      </details>
+
+      <details class="panel" open>
+        <summary><h2>Slots</h2></summary>
+        <div class="panel-body">
+          <div class="table-wrap">
+            <table class="table">
+              <thead><tr><th scope="col">Slot #</th><th scope="col">USB path</th><th scope="col">Label</th><th scope="col"></th></tr></thead>
+              <tbody>
+                <tr><td>1</td><td><input type="text" value="1-1" /></td><td><input type="text" value="workbench-left" /></td><td><button type="button" class="danger" data-confirm-action="Remove slot" data-feedback="Slot removal simulated. The slot still exists in this mock." >Remove</button></td></tr>
+                <tr><td>2</td><td><input type="text" value="1-2" /></td><td><input type="text" value="workbench-right" /></td><td><button type="button" class="danger" data-confirm-action="Remove slot" data-feedback="Slot removal simulated. The slot still exists in this mock.">Remove</button></td></tr>
+                <tr><td>3</td><td><input type="text" value="1-3" /></td><td><input type="text" value="rack-2" /></td><td><button type="button" class="danger" data-confirm-action="Remove slot" data-feedback="Slot removal simulated. The slot still exists in this mock.">Remove</button></td></tr>
+                <tr><td>4</td><td><input type="text" value="1-4" /></td><td><input type="text" value="rack-3" /></td><td><button type="button" class="danger" data-confirm-action="Remove slot" data-feedback="Slot removal simulated. The slot still exists in this mock.">Remove</button></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <div class="actions" style="justify-content:flex-start;">
+            <button type="button">+ Add slot</button>
+            <button type="button" class="primary">Save slots</button>
+          </div>
+        </div>
+      </details>
+
+      <details class="panel" open>
+        <summary><h2>System</h2></summary>
+        <div class="panel-body">
+          <button type="button" class="danger" data-confirm-action="Restart server" data-feedback="Server restart simulated. No backend was called.">Restart server</button>
+          <p class="note">Restart is allowed only when all slots are idle. You may force restart if stuck.</p>
+        </div>
+      </details>
+    </form>
   </main>
+
+  <div id="confirm-layer" class="dialog-backdrop" hidden>
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="confirm-title" aria-describedby="confirm-desc">
+      <h2 id="confirm-title">Confirm action</h2>
+      <p id="confirm-desc">This is a simulated prototype action.</p>
+      <div class="dialog-actions">
+        <button type="button" id="confirm-cancel">Cancel</button>
+        <button type="button" class="danger" id="confirm-accept">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const form = document.getElementById('settings-form');
+    const dirtyState = document.getElementById('dirty-state');
+    const feedback = document.getElementById('setup-feedback');
+    const saveBtn = document.getElementById('save-btn');
+    const discardBtn = document.getElementById('discard-btn');
+    const dialog = document.getElementById('confirm-layer');
+    const dialogTitle = document.getElementById('confirm-title');
+    const dialogDesc = document.getElementById('confirm-desc');
+    const confirmAccept = document.getElementById('confirm-accept');
+    const confirmCancel = document.getElementById('confirm-cancel');
+    let dirty = false;
+    let activeTrigger = null;
+    let pendingFeedback = '';
+
+    function setToast(message, kind = 'ok') {
+      feedback.className = `banner ${kind} toast`;
+      feedback.textContent = message;
+    }
+
+    function setDirty(next) {
+      dirty = next;
+      dirtyState.textContent = next ? 'Unsaved changes' : 'No unsaved changes';
+      dirtyState.className = next ? 'dirty' : 'clean';
+    }
+
+    function openDialog(trigger) {
+      activeTrigger = trigger;
+      pendingFeedback = trigger.dataset.feedback || `${trigger.dataset.confirmAction} simulated.`;
+      dialogTitle.textContent = `Confirm ${trigger.dataset.confirmAction}`;
+      dialogDesc.textContent = `You are about to ${trigger.dataset.confirmAction.toLowerCase()} in the static mock UI.`;
+      dialog.hidden = false;
+      document.body.style.overflow = 'hidden';
+      confirmCancel.focus();
+    }
+
+    function closeDialog() {
+      dialog.hidden = true;
+      document.body.style.overflow = '';
+      if (activeTrigger) activeTrigger.focus();
+      activeTrigger = null;
+    }
+
+    function acceptDialog() {
+      closeDialog();
+      setToast(pendingFeedback, 'ok');
+    }
+
+    form.addEventListener('input', () => setDirty(true));
+    form.addEventListener('change', () => setDirty(true));
+
+    saveBtn.addEventListener('click', () => {
+      setDirty(false);
+      setToast('Saved locally. No persistence was performed.', 'ok');
+    });
+
+    discardBtn.addEventListener('click', () => {
+      form.reset();
+      setDirty(false);
+      setToast('Discarded local edits and restored the initial mock values.', 'ok');
+    });
+
+    document.querySelectorAll('[data-confirm-action]').forEach(btn => {
+      btn.addEventListener('click', () => openDialog(btn));
+    });
+
+    confirmAccept.addEventListener('click', acceptDialog);
+    confirmCancel.addEventListener('click', closeDialog);
+    dialog.addEventListener('click', (e) => { if (e.target === dialog) closeDialog(); });
+    document.addEventListener('keydown', (e) => {
+      if (dialog.hidden) return;
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        closeDialog();
+        return;
+      }
+      if (e.key !== 'Tab') return;
+      const focusable = dialog.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+      const items = Array.from(focusable).filter(el => !el.hasAttribute('disabled'));
+      if (items.length === 0) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    });
+
+    setDirty(false);
+  </script>
 </body>
 </html>

@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Arrow Flasher — Diagnostics</title>
   <style>
+    [hidden] { display: none !important; }
     :root {
       --bg-page: #010409;
       --bg-card: #0d1117;
       --bg-input: #161b22;
-      --border: #30363d;
+      --border: #3d444d;
       --border-subtle: #21262d;
       --text: #c9d1d9;
       --muted: #8b949e;
@@ -28,11 +29,13 @@
     body { padding: 24px 16px 48px; }
     .app { width: min(1100px, 100%); margin: 0 auto; }
     nav { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
-    nav a { padding: 8px 16px; background: var(--bg-input); color: #fff; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; text-decoration: none; }
+    nav a { padding: 8px 16px; background: var(--bg-input); color: #fff; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; text-decoration: none; min-height: 44px; display: inline-flex; align-items: center; }
     nav a.active { background: var(--blue); border-color: var(--blue); }
     h1 { margin: 0 0 16px; font-size: 24px; font-weight: 600; }
     h2 { margin: 0 0 10px; font-size: 16px; font-weight: 600; }
     .panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+    .summary { background: var(--red-soft); border: 1px solid rgba(248,81,73,.42); border-radius: 8px; padding: 10px 14px; color: var(--red-text); font-size: 14px; margin-bottom: 16px; }
+    .summary strong { color: var(--red); }
     .health { background: var(--red-soft); border: 1px solid rgba(248,81,73,.42); border-radius: 8px; padding: 10px 14px; color: var(--red-text); font-size: 13px; }
     .health strong { color: var(--red); }
     .health ul { margin: 6px 0 0; padding-left: 18px; }
@@ -45,15 +48,24 @@
     .empty { color: var(--muted); font-size: 13px; }
     .usb-list { font-family: var(--mono); font-size: 12px; margin: 0; padding-left: 18px; line-height: 1.7; }
     .usb-list li { margin: 3px 0; }
-    table { width: 100%; border-collapse: collapse; font-size: 12px; font-family: var(--mono); }
+    .table-wrap { width: 100%; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 12px; font-family: var(--mono); min-width: 640px; }
     thead th { text-align: left; color: var(--muted); border-bottom: 1px solid var(--border); padding: 4px 12px 4px 0; font-weight: 600; }
     tbody td { padding: 4px 12px 4px 0; border-bottom: 1px solid var(--border-subtle); }
     a { color: #58a6ff; text-decoration: none; }
     a:hover { text-decoration: underline; }
-    button { padding: 7px 12px; background: var(--bg-input); color: var(--text); border: 1px solid var(--border); border-radius: 6px; font-size: 14px; cursor: pointer; }
+    button { min-height: 44px; padding: 7px 12px; background: var(--bg-input); color: var(--text); border: 1px solid var(--border); border-radius: 6px; font-size: 14px; cursor: pointer; }
     button:disabled { opacity: 0.55; cursor: not-allowed; }
+    .danger { background: var(--red-soft); color: var(--red-text); border-color: rgba(248,81,73,.42); }
     .status { color: var(--muted); font-size: 13px; margin-top: 8px; }
     .meta { color: var(--muted); font-size: 12px; margin-bottom: 8px; }
+    .feedback { color: var(--green-text); font-size: 13px; margin-top: 8px; }
+    .dialog-backdrop { position: fixed; inset: 0; background: rgba(1,4,9,.72); display: grid; place-items: center; padding: 16px; z-index: 50; }
+    .dialog { width: min(420px, 100%); background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; box-shadow: 0 24px 80px rgba(0,0,0,.5); }
+    .dialog h2 { margin: 0 0 8px; font-size: 18px; }
+    .dialog p { margin: 0 0 14px; color: var(--muted); }
+    .dialog-actions { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+    @media (max-width: 720px) { .usb-list { word-break: break-all; } }
       /* P0 a11y: visible keyboard focus */
     :focus-visible { outline: 2px solid var(--blue, #1f6feb); outline-offset: 2px; }
     input[type="checkbox"]:focus-visible, input[type="radio"]:focus-visible { outline-offset: 3px; }
@@ -62,6 +74,10 @@
 <body>
   <main class="app">
     <h1>Diagnostics</h1>
+
+    <div class="summary" role="alert" aria-live="assertive">
+      <strong>4 checks failing; flashing is unavailable.</strong>
+    </div>
 
     <div class="health" role="alert">
       <strong>⚠ Server not ready</strong>
@@ -86,24 +102,81 @@
 
       <section class="section">
         <h2>ESC error dumps (latest 200)</h2>
-        <table aria-label="ESC error dumps">
-          <thead><tr><th scope="col">When</th><th scope="col">Slot</th><th scope="col">ESC</th><th scope="col">UID</th><th scope="col">Size</th><th scope="col">File</th></tr></thead>
-          <tbody>
-            <tr><td>2026-08-05 14:18:43</td><td>2</td><td>2</td><td>350022001150563131323932</td><td>1.2 kB</td><td><a href="#">download</a></td></tr>
-            <tr><td>2026-08-05 13:45:03</td><td>2</td><td>1</td><td>34001a001150563131323933</td><td>856 B</td><td><a href="#">download</a></td></tr>
-            <tr><td>2026-08-05 12:11:18</td><td>3</td><td>4</td><td>3100ff001150563131323934</td><td>2.1 kB</td><td><a href="#">download</a></td></tr>
-            <tr><td>2026-08-05 11:52:07</td><td>1</td><td>3</td><td>350022001150563131323932</td><td>1.0 kB</td><td><a href="#">download</a></td></tr>
-          </tbody>
-        </table>
+        <div class="table-wrap">
+          <table aria-label="ESC error dumps">
+            <thead><tr><th scope="col">When</th><th scope="col">Slot</th><th scope="col">ESC</th><th scope="col">UID</th><th scope="col">Size</th><th scope="col">File</th></tr></thead>
+            <tbody>
+              <tr><td>2026-08-05 14:18:43</td><td>2</td><td>2</td><td>350022001150563131323932</td><td>1.2 kB</td><td><a href="#">download</a></td></tr>
+              <tr><td>2026-08-05 13:45:03</td><td>2</td><td>1</td><td>34001a001150563131323933</td><td>856 B</td><td><a href="#">download</a></td></tr>
+              <tr><td>2026-08-05 12:11:18</td><td>3</td><td>4</td><td>3100ff001150563131323934</td><td>2.1 kB</td><td><a href="#">download</a></td></tr>
+              <tr><td>2026-08-05 11:52:07</td><td>1</td><td>3</td><td>350022001150563131323932</td><td>1.0 kB</td><td><a href="#">download</a></td></tr>
+            </tbody>
+          </table>
+        </div>
       </section>
 
       <section class="section">
         <h2>Server control</h2>
         <p class="meta">Uptime: 2 h 14 m 33 s</p>
-        <button type="button" disabled title="Wait until all slots are idle">Restart server</button>
-        <p class="status">Restart disabled: server is not idle.</p>
+        <button type="button" class="danger" id="restart-btn" data-confirm-action="Restart server" data-feedback="Server restart simulated. No backend was called.">Restart server</button>
+        <p id="restart-status" class="status">This action requires confirmation because it restarts the server.</p>
+        <p id="restart-helper" class="note">No backend will be called; this is a prototype simulation.</p>
+        <div id="restart-feedback" class="feedback" role="status" aria-live="polite"></div>
       </section>
     </div>
   </main>
+
+  <!-- Confirm dialog -->
+  <div id="confirm-layer" class="dialog-backdrop" hidden>
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="confirm-title" aria-describedby="confirm-desc">
+      <h2 id="confirm-title">Confirm action</h2>
+      <p id="confirm-desc">This is a simulated prototype action.</p>
+      <div class="dialog-actions">
+        <button type="button" id="confirm-cancel">Cancel</button>
+        <button type="button" class="danger" id="confirm-accept">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function() {
+      const dialog = document.getElementById('confirm-layer');
+      const dialogTitle = document.getElementById('confirm-title');
+      const dialogDesc = document.getElementById('confirm-desc');
+      const confirmAccept = document.getElementById('confirm-accept');
+      const confirmCancel = document.getElementById('confirm-cancel');
+      const restartBtn = document.getElementById('restart-btn');
+      const restartStatus = document.getElementById('restart-status');
+      const restartFeedback = document.getElementById('restart-feedback');
+      let pendingAction = null;
+      let returnFocus = null;
+
+      function openDialog(trigger, onConfirm) {
+        returnFocus = trigger;
+        pendingAction = onConfirm;
+        dialogTitle.textContent = `Confirm ${trigger.dataset.confirmAction}`;
+        dialogDesc.textContent = `You are about to ${trigger.dataset.confirmAction.toLowerCase()} in the static mock UI.`;
+        dialog.hidden = false;
+        confirmCancel.focus();
+      }
+
+      function closeDialog() {
+        dialog.hidden = true;
+        if (returnFocus) returnFocus.focus();
+        pendingAction = null;
+      }
+
+      restartBtn.addEventListener('click', () => openDialog(restartBtn, () => {
+        restartStatus.textContent = 'Server is restarting (simulated)…';
+        restartFeedback.textContent = 'Server restart simulated. No backend was called.';
+        setTimeout(() => { restartStatus.textContent = 'Uptime: 0 h 0 m 0 s (simulated)'; }, 800);
+      }));
+
+      confirmAccept.addEventListener('click', () => { if (pendingAction) pendingAction(); closeDialog(); });
+      confirmCancel.addEventListener('click', closeDialog);
+      dialog.addEventListener('click', (e) => { if (e.target === dialog) closeDialog(); });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !dialog.hidden) closeDialog(); });
+    })();
+  </script>
 </body>
 </html>

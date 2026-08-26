@@ -5,11 +5,12 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Arrow Flasher — RX Bind</title>
   <style>
+    [hidden] { display: none !important; }
     :root {
       --bg-page: #010409;
       --bg-card: #0d1117;
       --bg-input: #161b22;
-      --border: #30363d;
+      --border: #3d444d;
       --border-subtle: #21262d;
       --text: #c9d1d9;
       --muted: #8b949e;
@@ -31,7 +32,7 @@
     body { padding: 24px 16px 48px; }
     .app { width: min(1000px, 100%); margin: 0 auto; }
     nav { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
-    nav a { padding: 8px 16px; background: var(--bg-input); color: #fff; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; text-decoration: none; }
+    nav a { padding: 8px 16px; background: var(--bg-input); color: #fff; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; text-decoration: none; min-height: 44px; display: inline-flex; align-items: center; }
     nav a.active { background: var(--blue); border-color: var(--blue); }
     h1 { margin: 0 0 16px; font-size: 24px; font-weight: 600; }
     h2 { margin: 0 0 12px; font-size: 18px; font-weight: 600; }
@@ -45,7 +46,7 @@
     .banner.green strong { color: var(--green); }
     .status-row { display: flex; gap: 16px; flex-wrap: wrap; color: var(--muted); font-size: 13px; margin-bottom: 12px; }
     .status-row span strong { color: var(--text); }
-    button { padding: 6px 12px; background: var(--bg-input); color: var(--text); border: 1px solid var(--border); border-radius: 6px; font-size: 13px; cursor: pointer; }
+    button { min-height: 44px; padding: 6px 12px; background: var(--bg-input); color: var(--text); border: 1px solid var(--border); border-radius: 6px; font-size: 13px; cursor: pointer; }
     button.primary { background: var(--green-soft); color: var(--green-text); border-color: rgba(46,160,67,.42); font-weight: 600; }
     button:disabled { opacity: 0.55; cursor: not-allowed; }
     input[type="text"], input[type="number"] { min-height: 32px; padding: 6px 10px; background: var(--bg-input); color: var(--text); border: 1px solid var(--border); border-radius: 6px; font: 13px var(--mono); }
@@ -55,14 +56,19 @@
     .select-wrap::after { content: ''; position: absolute; right: 10px; width: 8px; height: 8px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg); pointer-events: none; }
     .inline { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
     .inline label { margin: 0; }
-    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .table-wrap { width: 100%; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 520px; }
     thead th { text-align: left; color: var(--muted); border-bottom: 1px solid var(--border); padding: 8px 12px 8px 0; font-weight: 600; }
     tbody td { padding: 8px 12px 8px 0; border-bottom: 1px solid var(--border-subtle); vertical-align: top; }
     tr:last-child td { border-bottom: 0; }
     .note { color: var(--muted); font-size: 12px; margin-top: 8px; }
+    .helper { color: var(--muted); font-size: 12px; margin-top: 8px; }
     .section { margin-top: 16px; }
     .section:first-child { margin-top: 0; }
     .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+    .loading { display: inline-flex; align-items: center; gap: 8px; color: var(--amber-text); font-size: 13px; }
+    .loading::before { content: ""; width: 14px; height: 14px; border: 2px solid var(--border); border-top-color: var(--amber); border-radius: 50%; animation: spin 1s linear infinite; }
+    @keyframes spin { to { transform: rotate(360deg); } }
     @media (max-width: 720px) { .grid-2 { grid-template-columns: 1fr; } .inline { flex-direction: column; align-items: flex-start; } }
       /* P0 a11y: visible keyboard focus */
     :focus-visible { outline: 2px solid var(--blue, #1f6feb); outline-offset: 2px; }
@@ -73,7 +79,7 @@
   <main class="app">
     <h1>RX Bind</h1>
 
-    <div class="banner green" role="status">
+    <div class="banner green" role="status" aria-live="polite">
       <strong>✅ Safety gate OK</strong> — System disarmed, no busy slots, binding allowed.
     </div>
 
@@ -86,7 +92,7 @@
         <span>Detected RXs: <strong>0</strong></span>
       </div>
       <div class="inline">
-        <button type="button">Start</button>
+        <button type="button" id="auto-start" data-confirm-action="Start autobind" data-feedback="Autobind start simulated. No radios were powered.">Start</button>
         <button type="button" disabled>Stop</button>
       </div>
     </section>
@@ -95,17 +101,29 @@
     <section class="panel">
       <h2>Manual bind</h2>
       <div class="inline" style="margin-bottom:12px;">
-        <button type="button" class="primary">Scan for RX APs</button>
-        <span class="note">Last scan: 2026-08-05 14:20:33</span>
+        <button type="button" class="primary" id="scan-btn">Scan for RX APs</button>
+        <span class="note" id="scan-meta">Last scan: 2026-08-05 14:20:33</span>
       </div>
-      <table aria-label="Discovered receivers">
-        <thead><tr><th scope="col"><input type="checkbox" aria-label="Select all receivers" /></th><th scope="col">SSID</th><th scope="col">Signal</th><th scope="col">Protocol</th></tr></thead>
-        <tbody>
-          <tr><td><input type="checkbox" /></td><td>ExpressLRS-5G-01</td><td>-42 dBm</td><td>ELRS 3.0</td></tr>
-          <tr><td><input type="checkbox" /></td><td>ExpressLRS-5G-02</td><td>-58 dBm</td><td>ELRS 3.0</td></tr>
-          <tr><td><input type="checkbox" /></td><td>TBS-Crossfire-01</td><td>-67 dBm</td><td>CRSF</td></tr>
-        </tbody>
-      </table>
+      <div id="scan-feedback" role="status" aria-live="polite" class="note" style="margin-bottom:12px;"></div>
+      <div class="table-wrap">
+        <table aria-label="Discovered receivers">
+          <thead><tr><th scope="col" aria-label="Select">#</th><th scope="col">SSID</th><th scope="col">Signal</th><th scope="col">Protocol</th></tr></thead>
+          <tbody>
+            <tr>
+              <td><input type="checkbox" class="rx-select" aria-label="Select ExpressLRS-5G-01" /></td>
+              <td>ExpressLRS-5G-01</td><td>-42 dBm</td><td>ELRS 3.0</td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" class="rx-select" aria-label="Select ExpressLRS-5G-02" /></td>
+              <td>ExpressLRS-5G-02</td><td>-58 dBm</td><td>ELRS 3.0</td>
+            </tr>
+            <tr>
+              <td><input type="checkbox" class="rx-select" aria-label="Select TBS-Crossfire-01" /></td>
+              <td>TBS-Crossfire-01</td><td>-67 dBm</td><td>CRSF</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </section>
 
     <!-- Bind phrase -->
@@ -117,41 +135,148 @@
           <input id="bindPhrase" type="text" value="strily-peruna-01" />
         </div>
         <div style="display:flex;align-items:flex-end;">
-          <button type="button">Use template phrase</button>
+          <button type="button" data-confirm-action="Use template phrase" data-feedback="Template phrase applied locally. No TX/RX settings changed.">Use template phrase</button>
         </div>
       </div>
     </section>
 
     <!-- Bind action -->
     <section class="panel">
-      <button type="button" class="primary">Bind selected (0)</button>
-      <p class="note">Binding is disabled while autobind is running or safety gate is not OK.</p>
+      <button type="button" class="primary" id="bind-btn" disabled>Bind selected (0)</button>
+      <p class="helper" id="bind-helper">Select at least one receiver.</p>
+      <div id="bind-feedback" role="status" aria-live="polite" class="note" style="margin-top:8px;"></div>
     </section>
 
     <!-- In progress / latest cycle -->
     <section class="panel">
       <h2>Latest cycle</h2>
-      <table aria-label="Bind progress">
-        <thead><tr><th scope="col">RX</th><th scope="col">Bind phrase</th><th scope="col">Status</th><th scope="col">Started</th></tr></thead>
-        <tbody>
-          <tr><td>ExpressLRS-5G-01</td><td>******</td><td>done</td><td>2026-08-05 14:18:43</td></tr>
-          <tr><td>ExpressLRS-5G-02</td><td>******</td><td>done</td><td>2026-08-05 14:18:52</td></tr>
-        </tbody>
-      </table>
+      <div class="table-wrap">
+        <table aria-label="Bind progress">
+          <thead><tr><th scope="col">RX</th><th scope="col">Bind phrase</th><th scope="col">Status</th><th scope="col">Started</th></tr></thead>
+          <tbody>
+            <tr><td>ExpressLRS-5G-01</td><td>******</td><td>done</td><td>2026-08-05 14:18:43</td></tr>
+            <tr><td>ExpressLRS-5G-02</td><td>******</td><td>done</td><td>2026-08-05 14:18:52</td></tr>
+          </tbody>
+        </table>
+      </div>
     </section>
 
     <!-- Recent binds -->
     <section class="panel">
       <h2>Recent binds</h2>
-      <table aria-label="Recent binds">
-        <thead><tr><th scope="col">When</th><th scope="col">RX</th><th scope="col">Result</th></tr></thead>
-        <tbody>
-          <tr><td>2026-08-05 14:18:43</td><td>ExpressLRS-5G-01</td><td>OK</td></tr>
-          <tr><td>2026-08-05 14:18:52</td><td>ExpressLRS-5G-02</td><td>OK</td></tr>
-          <tr><td>2026-08-05 13:45:03</td><td>TBS-Crossfire-01</td><td>timeout</td></tr>
-        </tbody>
-      </table>
+      <div class="table-wrap">
+        <table aria-label="Recent binds">
+          <thead><tr><th scope="col">When</th><th scope="col">RX</th><th scope="col">Result</th></tr></thead>
+          <tbody>
+            <tr><td>2026-08-05 14:18:43</td><td>ExpressLRS-5G-01</td><td>OK</td></tr>
+            <tr><td>2026-08-05 14:18:52</td><td>ExpressLRS-5G-02</td><td>OK</td></tr>
+            <tr><td>2026-08-05 13:45:03</td><td>TBS-Crossfire-01</td><td>timeout</td></tr>
+          </tbody>
+        </table>
+      </div>
     </section>
+
+    <!-- Confirm dialog -->
+    <div id="confirm-layer" class="dialog-backdrop" hidden>
+      <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="confirm-title" aria-describedby="confirm-desc">
+        <h2 id="confirm-title">Confirm action</h2>
+        <p id="confirm-desc">This is a simulated prototype action.</p>
+        <div class="dialog-actions">
+          <button type="button" id="confirm-cancel">Cancel</button>
+          <button type="button" class="danger" id="confirm-accept">Confirm</button>
+        </div>
+      </div>
+    </div>
   </main>
+
+  <style>
+    [hidden] { display: none !important; }
+    .dialog-backdrop { position: fixed; inset: 0; background: rgba(1,4,9,.72); display: grid; place-items: center; padding: 16px; z-index: 50; }
+    .dialog { width: min(420px, 100%); background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; box-shadow: 0 24px 80px rgba(0,0,0,.5); }
+    .dialog h2 { margin: 0 0 8px; font-size: 18px; }
+    .dialog p { margin: 0 0 14px; color: var(--muted); }
+    .dialog-actions { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
+    .danger { background: var(--red-soft); color: var(--red-text); border-color: rgba(248,81,73,.42); }
+  </style>
+
+  <script>
+    (function() {
+      const checkboxes = document.querySelectorAll('.rx-select');
+      const bindBtn = document.getElementById('bind-btn');
+      const bindHelper = document.getElementById('bind-helper');
+      const bindFeedback = document.getElementById('bind-feedback');
+      const scanBtn = document.getElementById('scan-btn');
+      const scanFeedback = document.getElementById('scan-feedback');
+      const scanMeta = document.getElementById('scan-meta');
+
+      function updateBind() {
+        const count = document.querySelectorAll('.rx-select:checked').length;
+        bindBtn.textContent = `Bind selected (${count})`;
+        bindBtn.disabled = count === 0;
+        bindHelper.textContent = count === 0 ? 'Select at least one receiver.' : `${count} receiver${count === 1 ? '' : 's'} selected.`;
+      }
+
+      checkboxes.forEach(cb => cb.addEventListener('change', updateBind));
+
+      bindBtn.addEventListener('click', () => {
+        const count = document.querySelectorAll('.rx-select:checked').length;
+        bindFeedback.textContent = `Simulated bind for ${count} receiver${count === 1 ? '' : 's'}. No radios were configured.`;
+      });
+
+      scanBtn.addEventListener('click', () => {
+        scanBtn.disabled = true;
+        scanFeedback.innerHTML = '<span class="loading">Scanning for RX access points…</span>';
+        setTimeout(() => {
+          scanBtn.disabled = false;
+          scanFeedback.textContent = 'Scan complete. 3 access points found (simulated). No radios were queried.';
+          scanMeta.textContent = `Last scan: ${new Date().toISOString().slice(0,19).replace('T',' ')}`;
+        }, 1200);
+      });
+
+      // Reusable confirmation dialog for destructive/simulated actions
+      const dialog = document.getElementById('confirm-layer');
+      const dialogTitle = document.getElementById('confirm-title');
+      const dialogDesc = document.getElementById('confirm-desc');
+      const confirmAccept = document.getElementById('confirm-accept');
+      const confirmCancel = document.getElementById('confirm-cancel');
+      let pendingAction = null;
+      let returnFocus = null;
+
+      function openDialog(trigger, onConfirm) {
+        returnFocus = trigger;
+        pendingAction = onConfirm;
+        dialogTitle.textContent = `Confirm ${trigger.dataset.confirmAction}`;
+        dialogDesc.textContent = `You are about to ${trigger.dataset.confirmAction.toLowerCase()} in the static mock UI.`;
+        dialog.hidden = false;
+        confirmCancel.focus();
+      }
+
+      function closeDialog() {
+        dialog.hidden = true;
+        if (returnFocus) returnFocus.focus();
+        pendingAction = null;
+      }
+
+      confirmAccept.addEventListener('click', () => {
+        if (pendingAction) pendingAction();
+        closeDialog();
+      });
+      confirmCancel.addEventListener('click', closeDialog);
+      dialog.addEventListener('click', (e) => { if (e.target === dialog) closeDialog(); });
+      document.addEventListener('keydown', (e) => { if (e.key === 'Escape' && !dialog.hidden) closeDialog(); });
+
+      document.querySelectorAll('[data-confirm-action]').forEach(btn => {
+        btn.addEventListener('click', () => openDialog(btn, () => {
+          const fb = btn.dataset.feedback;
+          if (fb) {
+            const live = btn.closest('section').querySelector('[role="status"][aria-live="polite"]') || bindFeedback;
+            live.textContent = fb;
+          }
+        }));
+      });
+
+      updateBind();
+    })();
+  </script>
 </body>
 </html>

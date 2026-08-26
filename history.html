@@ -9,7 +9,7 @@
       --bg-page: #010409;
       --bg-card: #0d1117;
       --bg-input: #161b22;
-      --border: #30363d;
+      --border: #3d444d;
       --border-subtle: #21262d;
       --text: #c9d1d9;
       --muted: #8b949e;
@@ -28,28 +28,32 @@
     body { padding: 24px 16px 48px; }
     .app { width: min(1100px, 100%); margin: 0 auto; }
     nav { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
-    nav a { padding: 8px 16px; background: var(--bg-input); color: #fff; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; text-decoration: none; }
+    nav a { padding: 8px 16px; background: var(--bg-input); color: #fff; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; text-decoration: none; min-height: 44px; display: inline-flex; align-items: center; }
     nav a.active { background: var(--blue); border-color: var(--blue); }
     h1 { margin: 0 0 16px; font-size: 24px; font-weight: 600; }
     .filters { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
-    .filters button { padding: 6px 12px; background: var(--bg-input); color: var(--text); border: 1px solid var(--border); border-radius: 6px; font-size: 13px; cursor: pointer; }
-    .filters button.active { background: var(--blue); border-color: var(--blue); color: #fff; }
+    .filters button { min-height: 44px; padding: 6px 12px; background: var(--bg-input); color: var(--text); border: 1px solid var(--border); border-radius: 6px; font-size: 13px; cursor: pointer; }
+    .filters button[aria-pressed="true"] { background: var(--blue); border-color: var(--blue); color: #fff; }
     .panel { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 16px; }
     .empty { color: var(--muted); font-size: 13px; text-align: center; padding: 32px 0; }
-    table { width: 100%; border-collapse: collapse; font-size: 13px; }
+    .table-wrap { width: 100%; overflow-x: auto; }
+    table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 720px; }
     thead th { text-align: left; color: var(--muted); border-bottom: 1px solid var(--border); padding: 8px 12px 8px 0; font-weight: 600; }
     tbody td { padding: 8px 12px 8px 0; border-bottom: 1px solid var(--border-subtle); vertical-align: top; }
     tr:last-child td { border-bottom: 0; }
     .result { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; padding: 2px 8px; border-radius: 12px; font-family: var(--mono); }
     .result.success { background: var(--green-soft); color: var(--green-text); border: 1px solid rgba(46,160,67,.42); }
     .result.failure { background: var(--red-soft); color: var(--red-text); border: 1px solid rgba(248,81,73,.42); }
-    .expand { color: #58a6ff; cursor: pointer; font-size: 12px; font-family: var(--mono); }
+    .expand { min-height: 44px; padding: 4px 0; background: transparent; color: #58a6ff; border: 0; cursor: pointer; font-size: 12px; font-family: var(--mono); }
+    .expand[aria-expanded="true"]::before { content: "− "; }
+    .expand[aria-expanded="false"]::before { content: "+ "; }
     .detail { background: var(--bg-input); border: 1px solid var(--border); border-radius: 6px; padding: 12px; margin-top: 8px; font-size: 12px; font-family: var(--mono); }
     .detail-row { display: flex; gap: 16px; padding: 3px 0; }
     .detail-row span:first-child { color: var(--muted); min-width: 140px; }
     .hidden { display: none; }
     a { color: #58a6ff; text-decoration: none; }
     a:hover { text-decoration: underline; }
+    @media (max-width: 720px) { .detail-row { flex-direction: column; gap: 2px; } }
       /* P0 a11y: visible keyboard focus */
     :focus-visible { outline: 2px solid var(--blue, #1f6feb); outline-offset: 2px; }
     input[type="checkbox"]:focus-visible, input[type="radio"]:focus-visible { outline-offset: 3px; }
@@ -59,69 +63,111 @@
   <main class="app">
     <h1>History</h1>
 
-    <div class="filters">
-      <button class="active" type="button">all</button>
-      <button type="button">success</button>
-      <button type="button">failure</button>
+    <div class="filters" role="group" aria-label="Filter history">
+      <button class="active" type="button" data-filter="all" aria-pressed="true">all</button>
+      <button type="button" data-filter="success" aria-pressed="false">success</button>
+      <button type="button" data-filter="failure" aria-pressed="false">failure</button>
     </div>
 
     <section class="panel">
-      <table aria-label="Flash history">
-        <thead>
-          <tr><th scope="col">#</th><th scope="col">Slot</th><th scope="col">Started</th><th scope="col">Duration</th><th scope="col">MCU UID</th><th scope="col">Result</th><th></th></tr>
-        </thead>
-        <tbody>
-          <tr>
-            <td>1</td><td>#2</td><td>2026-08-05 14:18:43</td><td>8.3 s</td><td>350022001150563131323932</td>
-            <td><span class="result success">success</span></td>
-            <td><span class="expand" onclick="toggle('d1')">details</span></td>
-          </tr>
-          <tr><td colspan="7"><div id="d1" class="detail hidden">
-            <div class="detail-row"><span>profile</span><span>arrow-flight-f405</span></div>
-            <div class="detail-row"><span>fc hash</span><span>sha256:9f4b2c…</span></div>
-            <div class="detail-row"><span>esc hash</span><span>sha256:1a7d3e…</span></div>
-            <div class="detail-row"><span>full MCU UID</span><span>350022001150563131323932</span></div>
-            <div class="detail-row"><span>started</span><span>2026-08-05T14:18:43.000Z</span></div>
-            <div class="detail-row"><span>finished</span><span>2026-08-05T14:18:51.300Z</span></div>
-            <div class="detail-row"><span>duration ms</span><span>8300</span></div>
-            <div class="detail-row"><span>esc signatures</span><span>4 ESCs detected</span></div>
-            <div class="detail-row"><span>esc actions</span><span>flash, verify</span></div>
-          </div></td></tr>
-          <tr>
-            <td>2</td><td>#1</td><td>2026-08-05 13:45:03</td><td>12.1 s</td><td>34001a001150563131323933</td>
-            <td><span class="result failure">failure</span></td>
-            <td><span class="expand" onclick="toggle('d2')">details</span></td>
-          </tr>
-          <tr><td colspan="7"><div id="d2" class="detail hidden">
-            <div class="detail-row"><span>profile</span><span>arrow-flight-f405</span></div>
-            <div class="detail-row"><span>error</span><span>DFU erase timeout at 0x08008000</span></div>
-            <div class="detail-row"><span>full MCU UID</span><span>34001a001150563131323933</span></div>
-            <div class="detail-row"><span>started</span><span>2026-08-05T13:45:03.000Z</span></div>
-            <div class="detail-row"><span>finished</span><span>2026-08-05T13:45:15.100Z</span></div>
-            <div class="detail-row"><span>duration ms</span><span>12100</span></div>
-          </div></td></tr>
-          <tr>
-            <td>3</td><td>#3</td><td>2026-08-05 12:11:18</td><td>9.6 s</td><td>3100ff001150563131323934</td>
-            <td><span class="result success">success</span></td>
-            <td><span class="expand" onclick="toggle('d3')">details</span></td>
-          </tr>
-          <tr><td colspan="7"><div id="d3" class="detail hidden">
-            <div class="detail-row"><span>profile</span><span>arrow-flight-f405</span></div>
-            <div class="detail-row"><span>full MCU UID</span><span>3100ff001150563131323934</span></div>
-            <div class="detail-row"><span>started</span><span>2026-08-05T12:11:18.000Z</span></div>
-            <div class="detail-row"><span>finished</span><span>2026-08-05T12:11:27.600Z</span></div>
-            <div class="detail-row"><span>duration ms</span><span>9600</span></div>
-          </div></td></tr>
-        </tbody>
-      </table>
+      <div class="table-wrap">
+        <table aria-label="Flash history">
+          <thead>
+            <tr><th scope="col">#</th><th scope="col">Slot</th><th scope="col">Started</th><th scope="col">Duration</th><th scope="col">MCU UID</th><th scope="col">Result</th><th scope="col" aria-label="Details"></th></tr>
+          </thead>
+          <tbody>
+            <tr data-result="success">
+              <td>1</td><td>#2</td><td>2026-08-05 14:18:43</td><td>8.3 s</td><td>350022001150563131323932</td>
+              <td><span class="result success">success</span></td>
+              <td><button type="button" class="expand" aria-expanded="false" aria-controls="d1">details</button></td>
+            </tr>
+            <tr data-result="success" class="detail-row"><td colspan="7"><div id="d1" class="detail hidden">
+              <div class="detail-row"><span>profile</span><span>arrow-flight-f405</span></div>
+              <div class="detail-row"><span>fc hash</span><span>sha256:9f4b2c…</span></div>
+              <div class="detail-row"><span>esc hash</span><span>sha256:1a7d3e…</span></div>
+              <div class="detail-row"><span>full MCU UID</span><span>350022001150563131323932</span></div>
+              <div class="detail-row"><span>started</span><span>2026-08-05T14:18:43.000Z</span></div>
+              <div class="detail-row"><span>finished</span><span>2026-08-05T14:18:51.300Z</span></div>
+              <div class="detail-row"><span>duration ms</span><span>8300</span></div>
+              <div class="detail-row"><span>esc signatures</span><span>4 ESCs detected</span></div>
+              <div class="detail-row"><span>esc actions</span><span>flash, verify</span></div>
+            </div></td></tr>
+            <tr data-result="failure">
+              <td>2</td><td>#1</td><td>2026-08-05 13:45:03</td><td>12.1 s</td><td>34001a001150563131323933</td>
+              <td><span class="result failure">failure</span></td>
+              <td><button type="button" class="expand" aria-expanded="false" aria-controls="d2">details</button></td>
+            </tr>
+            <tr data-result="failure" class="detail-row"><td colspan="7"><div id="d2" class="detail hidden">
+              <div class="detail-row"><span>profile</span><span>arrow-flight-f405</span></div>
+              <div class="detail-row"><span>error</span><span>DFU erase timeout at 0x08008000</span></div>
+              <div class="detail-row"><span>full MCU UID</span><span>34001a001150563131323933</span></div>
+              <div class="detail-row"><span>started</span><span>2026-08-05T13:45:03.000Z</span></div>
+              <div class="detail-row"><span>finished</span><span>2026-08-05T13:45:15.100Z</span></div>
+              <div class="detail-row"><span>duration ms</span><span>12100</span></div>
+            </div></td></tr>
+            <tr data-result="success">
+              <td>3</td><td>#3</td><td>2026-08-05 12:11:18</td><td>9.6 s</td><td>3100ff001150563131323934</td>
+              <td><span class="result success">success</span></td>
+              <td><button type="button" class="expand" aria-expanded="false" aria-controls="d3">details</button></td>
+            </tr>
+            <tr data-result="success" class="detail-row"><td colspan="7"><div id="d3" class="detail hidden">
+              <div class="detail-row"><span>profile</span><span>arrow-flight-f405</span></div>
+              <div class="detail-row"><span>full MCU UID</span><span>3100ff001150563131323934</span></div>
+              <div class="detail-row"><span>started</span><span>2026-08-05T12:11:18.000Z</span></div>
+              <div class="detail-row"><span>finished</span><span>2026-08-05T12:11:27.600Z</span></div>
+              <div class="detail-row"><span>duration ms</span><span>9600</span></div>
+            </div></td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p id="history-empty" class="empty hidden">No entries match the selected filter.</p>
     </section>
   </main>
 
   <script>
-    function toggle(id) {
+    function toggle(btn, id) {
       const el = document.getElementById(id);
-      if (el) el.classList.toggle('hidden');
+      if (!el) return;
+      el.classList.toggle('hidden');
+      const expanded = !el.classList.contains('hidden');
+      btn.setAttribute('aria-expanded', String(expanded));
+      btn.textContent = expanded ? 'hide' : 'details';
     }
+
+    document.querySelectorAll('.expand').forEach(btn => {
+      btn.addEventListener('click', () => toggle(btn, btn.getAttribute('aria-controls')));
+    });
+
+    const filterButtons = document.querySelectorAll('.filters button');
+    const resultRows = document.querySelectorAll('tbody > tr[data-result]');
+    const emptyMsg = document.getElementById('history-empty');
+
+    function applyFilter(filter) {
+      let visible = 0;
+      resultRows.forEach(row => {
+        const show = filter === 'all' || row.dataset.result === filter;
+        row.classList.toggle('hidden', !show);
+        // also hide the adjacent detail row
+        const next = row.nextElementSibling;
+        if (next && next.classList.contains('detail-row')) {
+          next.classList.toggle('hidden', !show);
+          if (!show) {
+            const detail = next.querySelector('.detail');
+            if (detail) detail.classList.add('hidden');
+          }
+        }
+        if (show) visible++;
+      });
+      emptyMsg.classList.toggle('hidden', visible > 0);
+    }
+
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        filterButtons.forEach(b => b.setAttribute('aria-pressed', 'false'));
+        btn.setAttribute('aria-pressed', 'true');
+        applyFilter(btn.dataset.filter);
+      });
+    });
   </script>
 </body>
 </html>

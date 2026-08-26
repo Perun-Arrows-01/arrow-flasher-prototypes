@@ -5,12 +5,13 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Arrow Flasher — Dashboard</title>
   <style>
+    [hidden] { display: none !important; }
     :root {
       --bg-page: #010409;
       --bg-card: #0d1117;
       --bg-input: #161b22;
-      --border: #30363d;
-      --border-subtle: #21262d;
+      --border: #3d444d;
+      --border-subtle: #2b313a;
       --text: #c9d1d9;
       --muted: #8b949e;
       --green: #238636;
@@ -32,43 +33,40 @@
     html, body { margin: 0; min-height: 100%; background: var(--bg-page); color: var(--text); font-family: var(--sans); font-size: 14px; }
     body { padding: 24px 16px 48px; }
     .app { width: min(1200px, 100%); margin: 0 auto; }
-    nav { display: flex; gap: 8px; margin-bottom: 24px; flex-wrap: wrap; }
-    nav a { padding: 8px 16px; background: var(--bg-input); color: #fff; border: 1px solid var(--border); border-radius: 6px; font-size: 14px; text-decoration: none; }
-    nav a.active { background: var(--blue); border-color: var(--blue); }
-    h1 { margin: 0; font-size: 24px; font-weight: 600; }
     .header { display: flex; justify-content: space-between; align-items: flex-start; gap: 16px; flex-wrap: wrap; margin-bottom: 16px; }
     .title-row { display: flex; align-items: center; gap: 10px; }
+    h1 { margin: 0; font-size: 24px; font-weight: 600; }
     .live-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--green); display: inline-block; }
     .live-text { color: var(--muted); font-size: 13px; }
     .controls { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
     .control-group { display: flex; align-items: center; gap: 6px; }
     .control-group label { color: var(--muted); font-size: 13px; margin: 0; }
     .select-wrap { position: relative; display: inline-flex; align-items: center; }
-    select { appearance: none; -webkit-appearance: none; -moz-appearance: none; min-height: 32px; padding: 6px 28px 6px 10px; background: var(--bg-input); color: var(--text); border: 1px solid var(--border); border-radius: 6px; font-size: 13px; cursor: pointer; min-width: 140px; }
+    select { appearance: none; -webkit-appearance: none; -moz-appearance: none; min-height: 44px; padding: 8px 32px 8px 12px; background: var(--bg-input); color: var(--text); border: 1px solid var(--border); border-radius: 6px; font-size: 13px; cursor: pointer; min-width: 140px; box-shadow: inset 0 1px 0 rgba(255,255,255,.02); }
     .select-wrap::after { content: ''; position: absolute; right: 10px; width: 8px; height: 8px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); transform: rotate(45deg); pointer-events: none; }
-    button { padding: 6px 12px; background: var(--bg-input); color: var(--text); border: 1px solid var(--border); border-radius: 6px; font-size: 13px; cursor: pointer; }
+    button { min-height: 44px; padding: 8px 12px; background: var(--bg-input); color: var(--text); border: 1px solid var(--border); border-radius: 6px; font-size: 13px; cursor: pointer; box-shadow: inset 0 1px 0 rgba(255,255,255,.02); }
     button.primary { background: var(--green-soft); color: var(--green-text); border-color: rgba(46,160,67,.42); font-weight: 600; }
     button.danger { background: var(--red-soft); color: var(--red-text); border-color: rgba(248,81,73,.42); }
     input[type="checkbox"] { accent-color: var(--blue); }
-    .summary { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
-    .summary-stats { display: flex; gap: 16px; font-size: 13px; color: var(--muted); }
+    .summary { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 12px 16px; margin-bottom: 16px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; box-shadow: inset 0 1px 0 rgba(255,255,255,.02); }
+    .summary-stats { display: flex; gap: 16px; font-size: 13px; color: var(--muted); flex-wrap: wrap; }
     .summary-stats strong { color: var(--text); }
-    .banner { border-radius: 8px; padding: 10px 14px; margin-bottom: 16px; font-size: 13px; }
-    .banner.green { background: var(--green-soft); border: 1px solid rgba(46,160,67,.42); color: var(--green-text); }
+    .banner { border-radius: 8px; padding: 10px 14px; margin-bottom: 16px; font-size: 13px; border: 1px solid var(--border); box-shadow: inset 0 1px 0 rgba(255,255,255,.02); }
+    .banner.green { background: var(--green-soft); border-color: rgba(46,160,67,.42); color: var(--green-text); }
     .banner.green strong { color: var(--green); }
-    .banner.red { background: var(--red-soft); border: 1px solid rgba(248,81,73,.42); color: var(--red-text); }
+    .banner.red { background: var(--red-soft); border-color: rgba(248,81,73,.42); color: var(--red-text); }
     .banner.red strong { color: var(--red); }
-    .banner.amber { background: var(--amber-soft); border: 1px solid rgba(210,153,34,.42); color: var(--amber-text); }
+    .banner.amber { background: var(--amber-soft); border-color: rgba(210,153,34,.42); color: var(--amber-text); }
     .banner.amber strong { color: var(--amber); }
-    .banner.blue { background: var(--blue-soft); border: 1px solid rgba(31,111,235,.42); color: var(--blue-text); }
+    .banner.blue { background: var(--blue-soft); border-color: rgba(31,111,235,.42); color: var(--blue-text); }
     .banner.blue strong { color: var(--blue); }
-    .banner-actions { display: flex; gap: 8px; margin-top: 8px; }
+    .banner-actions { display: flex; gap: 8px; margin-top: 8px; flex-wrap: wrap; }
     .slot-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(340px, 1fr)); gap: 16px; }
-    .slot-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; }
+    .slot-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 8px; padding: 14px; box-shadow: inset 0 1px 0 rgba(255,255,255,.02); }
     .slot-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px; }
     .slot-label { color: var(--muted); font-size: 12px; font-family: var(--mono); }
     .slot-number { background: var(--bg-input); border: 1px solid var(--border); padding: 2px 8px; border-radius: 12px; font-size: 12px; font-family: var(--mono); }
-    .state-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-family: var(--mono); border: 1px solid var(--border); margin-bottom: 10px; }
+    .state-badge { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 12px; font-size: 12px; font-family: var(--mono); border: 1px solid var(--border); margin-bottom: 10px; min-height: 44px; }
     .dot { width: 8px; height: 8px; border-radius: 50%; display: inline-block; }
     .state-empty .dot { background: var(--muted); }
     .state-flash .dot { background: var(--green); animation: pulse 1.2s infinite; }
@@ -77,24 +75,31 @@
     .state-done .dot { background: var(--green); }
     .state-error .dot { background: var(--red); }
     .progress-container { margin: 8px 0; }
-    .progress-header { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 4px; }
-    .progress-bar { height: 6px; background: var(--bg-input); border-radius: 3px; overflow: hidden; }
+    .progress-header { display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); margin-bottom: 4px; gap: 8px; }
+    .progress-bar { height: 6px; background: var(--bg-input); border-radius: 3px; overflow: hidden; border: 1px solid var(--border); }
     .progress-fill { height: 100%; background: var(--green); border-radius: 3px; }
     .progress-fill.blue { background: var(--blue); }
-    .countdown { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 13px; margin: 8px 0; }
+    .countdown { display: flex; align-items: center; gap: 8px; font-family: var(--mono); font-size: 13px; margin: 8px 0; flex-wrap: wrap; }
     .countdown-time { color: var(--amber); font-size: 16px; }
     .chips { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
-    .chip { display: inline-flex; align-items: center; gap: 4px; padding: 2px 8px; border-radius: 12px; font-size: 11px; font-family: var(--mono); border: 1px solid var(--border); background: var(--bg-input); color: var(--muted); }
+    .chip { display: inline-flex; align-items: center; gap: 4px; padding: 4px 8px; border-radius: 12px; font-size: 11px; font-family: var(--mono); border: 1px solid var(--border); background: var(--bg-input); color: var(--muted); min-height: 44px; }
     .chip.uid { color: var(--text); }
     .chip.stuck { color: var(--amber); border-color: rgba(210,153,34,.42); }
     .chip.repeat { color: var(--red); border-color: rgba(248,81,73,.42); }
-    .slot-actions { display: flex; gap: 8px; margin-top: 10px; }
-    .big-banner { border-radius: 8px; padding: 14px; text-align: center; font-weight: 600; margin-top: 12px; }
-    .big-banner.done { background: var(--green-soft); color: var(--green-text); border: 1px solid rgba(46,160,67,.42); }
-    .big-banner.error { background: var(--red-soft); color: var(--red-text); border: 1px solid rgba(248,81,73,.42); }
+    .slot-actions { display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap; }
+    .big-banner { border-radius: 8px; padding: 14px; text-align: center; font-weight: 600; margin-top: 12px; border: 1px solid var(--border); }
+    .big-banner.done { background: var(--green-soft); color: var(--green-text); border-color: rgba(46,160,67,.42); }
+    .big-banner.error { background: var(--red-soft); color: var(--red-text); border-color: rgba(248,81,73,.42); }
+    .feedback { margin-top: 12px; padding: 10px 14px; border-radius: 8px; background: var(--bg-card); border: 1px solid var(--border); color: var(--muted); box-shadow: inset 0 1px 0 rgba(255,255,255,.02); }
+    .feedback.ok { color: var(--green-text); border-color: rgba(46,160,67,.42); background: rgba(46,160,67,.12); }
+    .feedback.err { color: var(--red-text); border-color: rgba(248,81,73,.42); background: rgba(248,81,73,.12); }
+    .dialog-backdrop { position: fixed; inset: 0; background: rgba(1,4,9,.72); display: grid; place-items: center; padding: 16px; z-index: 50; }
+    .dialog { width: min(420px, 100%); background: var(--bg-card); border: 1px solid var(--border); border-radius: 10px; padding: 16px; box-shadow: 0 16px 40px rgba(0,0,0,.5); }
+    .dialog h2 { margin: 0 0 8px; font-size: 18px; }
+    .dialog p { margin: 0 0 14px; color: var(--muted); }
+    .dialog-actions { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-    @media (max-width: 720px) { .header { flex-direction: column; } .summary { flex-direction: column; align-items: flex-start; } }
-      /* P0 a11y: visible keyboard focus */
+    @media (max-width: 720px) { .header { flex-direction: column; } .summary { flex-direction: column; align-items: flex-start; } .slot-grid { grid-template-columns: 1fr; } }
     :focus-visible { outline: 2px solid var(--blue, #1f6feb); outline-offset: 2px; }
     input[type="checkbox"]:focus-visible, input[type="radio"]:focus-visible { outline-offset: 3px; }
   </style>
@@ -123,25 +128,26 @@
     </div>
 
     <div class="summary">
-      <div class="summary-stats">
+      <div class="summary-stats" aria-label="Session summary">
         <span>6 slots</span>
         <span>done <strong>1</strong></span>
         <span>busy <strong>3</strong></span>
         <span>error <strong>1</strong></span>
         <span>empty <strong>1</strong></span>
       </div>
-      <div style="display:flex;gap:8px;">
-        <button type="button">Reset session</button>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button type="button" data-confirm-action="Reset session" data-feedback="Reset session simulated. No real state was changed.">Reset session</button>
         <button type="button">Export CSV</button>
       </div>
     </div>
+
+    <div id="dashboard-feedback" class="feedback" role="status" aria-live="polite">Ready.</div>
 
     <div class="banner green" role="status"><strong>✅ Server ready</strong> — All subsystems operational.</div>
     <div class="banner blue" role="alert"><strong>ℹ Mismatch</strong> — Slot 3 plugged drone matches template <strong>quad-x-default</strong>. <span class="banner-actions"><button type="button">Switch to quad-x-default</button><button type="button">Dismiss</button><button type="button">Reboot to DFU</button></span></div>
     <div class="banner amber" role="alert"><strong>⚠ Unclaimed plug</strong> — USB 1-4.1 unrecognized. <span class="banner-actions"><button type="button">Claim</button><button type="button">Dismiss</button></span></div>
 
     <div class="slot-grid" aria-live="polite">
-      <!-- EMPTY -->
       <div class="slot-card">
         <div class="slot-header"><span class="slot-label">1-1.1</span><span class="slot-number">#1</span></div>
         <div class="select-wrap"><select><option>arrow-flight-f405</option><option>quad-x-default</option></select></div>
@@ -149,7 +155,6 @@
         <div style="color:var(--muted);font-size:13px;">Waiting for drone…</div>
       </div>
 
-      <!-- FLASHING_FC -->
       <div class="slot-card">
         <div class="slot-header"><span class="slot-label">1-2.4</span><span class="slot-number">#2</span></div>
         <div class="select-wrap"><select><option>arrow-flight-f405</option></select></div>
@@ -162,7 +167,6 @@
         <div class="slot-actions"><button type="button" class="danger">Cancel</button></div>
       </div>
 
-      <!-- ESC_PHASE -->
       <div class="slot-card">
         <div class="slot-header"><span class="slot-label">1-2.1</span><span class="slot-number">#3</span></div>
         <div class="select-wrap"><select><option>quad-x-default</option></select></div>
@@ -175,7 +179,6 @@
         <div class="slot-actions"><button type="button" class="danger">Cancel</button></div>
       </div>
 
-      <!-- WAIT_BATTERY -->
       <div class="slot-card">
         <div class="slot-header"><span class="slot-label">1-2.2</span><span class="slot-number">#4</span></div>
         <div class="select-wrap"><select><option>arrow-flight-f405</option></select></div>
@@ -185,7 +188,6 @@
         <div class="slot-actions"><button type="button">Retry</button><button type="button" class="danger">Cancel</button></div>
       </div>
 
-      <!-- DONE -->
       <div class="slot-card">
         <div class="slot-header"><span class="slot-label">1-1.1</span><span class="slot-number">#5</span></div>
         <div class="select-wrap"><select><option>arrow-flight-f405</option></select></div>
@@ -195,7 +197,6 @@
         <div class="slot-actions"><button type="button">Eject</button></div>
       </div>
 
-      <!-- ERROR -->
       <div class="slot-card">
         <div class="slot-header"><span class="slot-label">1-1.2</span><span class="slot-number">#6</span></div>
         <div class="select-wrap"><select><option>arrow-flight-f405</option></select></div>
@@ -203,9 +204,89 @@
         <div class="chips"><span class="chip repeat">repeat failure #3</span><span class="chip uid">MCU 34001a001150563131323933</span></div>
         <div style="color:var(--red-text);font-size:13px;margin:8px 0;">DFU flash failed — check USB cable, hold BOOT0 longer</div>
         <div class="big-banner error">⚠ FAILED — CHECK</div>
-        <div class="slot-actions"><button type="button" class="primary">Retry</button><button type="button" class="danger">Skip</button></div>
+        <div class="slot-actions"><button type="button" class="primary" data-confirm-action="Skip" data-feedback="Skipped the failed slot in this mock session.">Skip</button><button type="button" class="danger">Cancel</button></div>
       </div>
     </div>
   </main>
+
+  <div id="confirm-layer" class="dialog-backdrop" hidden>
+    <div class="dialog" role="dialog" aria-modal="true" aria-labelledby="confirm-title" aria-describedby="confirm-desc">
+      <h2 id="confirm-title">Confirm action</h2>
+      <p id="confirm-desc">This is a simulated prototype action.</p>
+      <div class="dialog-actions">
+        <button type="button" id="confirm-cancel">Cancel</button>
+        <button type="button" class="danger" id="confirm-accept">Confirm</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const feedback = document.getElementById('dashboard-feedback');
+    const dialog = document.getElementById('confirm-layer');
+    const dialogTitle = document.getElementById('confirm-title');
+    const dialogDesc = document.getElementById('confirm-desc');
+    const confirmAccept = document.getElementById('confirm-accept');
+    const confirmCancel = document.getElementById('confirm-cancel');
+    let activeTrigger = null;
+    let pendingFeedback = '';
+
+    function setFeedback(message, kind = '') {
+      feedback.className = `feedback${kind ? ` ${kind}` : ''}`;
+      feedback.textContent = message;
+    }
+
+    function openDialog(trigger) {
+      activeTrigger = trigger;
+      pendingFeedback = trigger.dataset.feedback || `${trigger.dataset.confirmAction} simulated.`;
+      dialogTitle.textContent = `Confirm ${trigger.dataset.confirmAction}`;
+      dialogDesc.textContent = `You are about to ${trigger.dataset.confirmAction.toLowerCase()} in the static mock UI.`;
+      dialog.hidden = false;
+      document.body.style.overflow = 'hidden';
+      confirmCancel.focus();
+    }
+
+    function closeDialog() {
+      dialog.hidden = true;
+      document.body.style.overflow = '';
+      if (activeTrigger) activeTrigger.focus();
+      activeTrigger = null;
+    }
+
+    function doAccept() {
+      closeDialog();
+      setFeedback(pendingFeedback, 'ok');
+    }
+
+    document.querySelectorAll('[data-confirm-action]').forEach(btn => {
+      btn.addEventListener('click', () => openDialog(btn));
+    });
+
+    confirmAccept.addEventListener('click', doAccept);
+    confirmCancel.addEventListener('click', closeDialog);
+    dialog.addEventListener('click', (e) => { if (e.target === dialog) closeDialog(); });
+    document.addEventListener('keydown', (e) => {
+      if (dialog.hidden) return;
+      if (e.key === 'Escape') {
+        e.preventDefault();
+        closeDialog();
+        return;
+      }
+      if (e.key !== 'Tab') return;
+      const focusable = dialog.querySelectorAll('button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])');
+      const items = Array.from(focusable).filter(el => !el.hasAttribute('disabled'));
+      if (items.length === 0) return;
+      const first = items[0];
+      const last = items[items.length - 1];
+      if (e.shiftKey && document.activeElement === first) {
+        e.preventDefault();
+        last.focus();
+      } else if (!e.shiftKey && document.activeElement === last) {
+        e.preventDefault();
+        first.focus();
+      }
+    });
+
+    setFeedback('Ready. Reset session and Skip are simulated destructive actions.');
+  </script>
 </body>
 </html>
