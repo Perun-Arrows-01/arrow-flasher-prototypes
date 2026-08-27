@@ -1,0 +1,170 @@
+{
+  "timestamp": "2026-08-27T06:40:00Z",
+  "tool": "Manual WCAG 2.1 AA Static Analysis",
+  "total_files": 8,
+  "summary": {
+    "total_violations": 0,
+    "total_warnings": 0,
+    "total_passes": 78
+  },
+  "results": [
+    {
+      "file": "app.html",
+      "violations": [],
+      "warnings": [],
+      "passes": [
+        "Has :focus-visible styles",
+        "Has prefers-reduced-motion media query",
+        "Has skip link",
+        "Has main landmark",
+        "Has viewport meta tag for responsive design",
+        "Has lang attribute on html element",
+        "Has page title"
+      ],
+      "violation_count": 0,
+      "warning_count": 0,
+      "pass_count": 7
+    },
+    {
+      "file": "dashboard.html",
+      "violations": [],
+      "warnings": [],
+      "passes": [
+        "Has :focus-visible styles",
+        "Has prefers-reduced-motion media query",
+        "Has skip link",
+        "Has main landmark",
+        "Uses ARIA roles: dialog, alert, status",
+        "Has aria-live regions for dynamic content",
+        "Has viewport meta tag for responsive design",
+        "Has lang attribute on html element",
+        "Has page title"
+      ],
+      "violation_count": 0,
+      "warning_count": 0,
+      "pass_count": 9
+    },
+    {
+      "file": "diag.html",
+      "violations": [],
+      "warnings": [],
+      "passes": [
+        "Has :focus-visible styles",
+        "Has prefers-reduced-motion media query",
+        "Has skip link",
+        "Has main landmark",
+        "Uses ARIA roles: dialog, alert, status",
+        "Has aria-live regions for dynamic content",
+        "Has viewport meta tag for responsive design",
+        "Has lang attribute on html element",
+        "Has page title",
+        "Table has header cells"
+      ],
+      "violation_count": 0,
+      "warning_count": 0,
+      "pass_count": 10
+    },
+    {
+      "file": "history.html",
+      "violations": [],
+      "warnings": [],
+      "passes": [
+        "Has :focus-visible styles",
+        "Has prefers-reduced-motion media query",
+        "Has skip link",
+        "Has main landmark",
+        "Uses ARIA roles: group, status",
+        "Has aria-live regions for dynamic content",
+        "Has aria-expanded for expandable elements",
+        "Has aria-pressed for toggle buttons",
+        "Has aria-controls for controlling elements",
+        "Has viewport meta tag for responsive design",
+        "Has lang attribute on html element",
+        "Has page title",
+        "Table has header cells"
+      ],
+      "violation_count": 0,
+      "warning_count": 0,
+      "pass_count": 13
+    },
+    {
+      "file": "index.html",
+      "violations": [],
+      "warnings": [],
+      "passes": [
+        "Has :focus-visible styles",
+        "Has prefers-reduced-motion media query",
+        "Has skip link",
+        "Has main landmark",
+        "Has viewport meta tag for responsive design",
+        "Has lang attribute on html element",
+        "Has page title"
+      ],
+      "violation_count": 0,
+      "warning_count": 0,
+      "pass_count": 7
+    },
+    {
+      "file": "license.html",
+      "violations": [],
+      "warnings": [],
+      "passes": [
+        "Has :focus-visible styles",
+        "Has prefers-reduced-motion media query",
+        "Has skip link",
+        "Has main landmark",
+        "Uses ARIA roles: alert, status",
+        "Form inputs have associated labels (2 matched)",
+        "Has viewport meta tag for responsive design",
+        "Has lang attribute on html element",
+        "Has page title"
+      ],
+      "violation_count": 0,
+      "warning_count": 0,
+      "pass_count": 9
+    },
+    {
+      "file": "rxbind.html",
+      "violations": [],
+      "warnings": [],
+      "passes": [
+        "Has :focus-visible styles",
+        "Has prefers-reduced-motion media query",
+        "Has skip link",
+        "Has main landmark",
+        "Uses ARIA roles: dialog, status",
+        "Has aria-live regions for dynamic content",
+        "Form inputs have associated labels (1 matched)",
+        "Has viewport meta tag for responsive design",
+        "Has lang attribute on html element",
+        "Has page title",
+        "Table has header cells",
+        "Table has header cells",
+        "Table has header cells"
+      ],
+      "violation_count": 0,
+      "warning_count": 0,
+      "pass_count": 13
+    },
+    {
+      "file": "setup.html",
+      "violations": [],
+      "warnings": [],
+      "passes": [
+        "Has :focus-visible styles",
+        "Has prefers-reduced-motion media query",
+        "Has skip link",
+        "Has main landmark",
+        "Uses ARIA roles: dialog, alert, status",
+        "Has aria-live regions for dynamic content",
+        "Has viewport meta tag for responsive design",
+        "Has lang attribute on html element",
+        "Has page title",
+        "Table has header cells"
+      ],
+      "violation_count": 0,
+      "warning_count": 0,
+      "pass_count": 10
+    }
+  ]
+}
