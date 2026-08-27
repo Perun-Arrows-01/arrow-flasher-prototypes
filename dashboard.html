@@ -102,10 +102,35 @@
     @media (max-width: 720px) { .header { flex-direction: column; } .summary { flex-direction: column; align-items: flex-start; } .slot-grid { grid-template-columns: 1fr; } }
     :focus-visible { outline: 2px solid var(--blue, #1f6feb); outline-offset: 2px; }
     input[type="checkbox"]:focus-visible, input[type="radio"]:focus-visible { outline-offset: 3px; }
-  </style>
+  
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--blue);
+      color: #fff;
+      padding: 8px 16px;
+      text-decoration: none;
+      z-index: 1000;
+      border-radius: 0 0 4px 0;
+    }
+    .skip-link:focus {
+      top: 0;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+</style>
 </head>
 <body>
-  <main class="app">
+  <a href="#main" class="skip-link">Skip to main content</a>
+
+  <main id="main" class="app">
     <div class="header">
       <div class="title-row">
         <h1>Dashboard</h1>
@@ -136,7 +161,7 @@
         <span>empty <strong>1</strong></span>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
-        <button type="button" data-confirm-action="Reset session" data-feedback="Reset session simulated. No real state was changed.">Reset session</button>
+        <button type="button" data-confirm-action="Reset session" data-feedback="Reset session simulated. No real state was changed." data-confirm-impact="This will reset 3 active slots and clear all session data.">Reset session</button>
         <button type="button">Export CSV</button>
       </div>
     </div>
@@ -239,7 +264,8 @@
       activeTrigger = trigger;
       pendingFeedback = trigger.dataset.feedback || `${trigger.dataset.confirmAction} simulated.`;
       dialogTitle.textContent = `Confirm ${trigger.dataset.confirmAction}`;
-      dialogDesc.textContent = `You are about to ${trigger.dataset.confirmAction.toLowerCase()} in the static mock UI.`;
+      const impact = trigger.dataset.confirmImpact || `You are about to ${trigger.dataset.confirmAction.toLowerCase()} in the static mock UI.`;
+      dialogDesc.innerHTML = `${impact}<br><span style="color:var(--muted);font-size:13px;margin-top:8px;display:block;">This is a simulated prototype action.</span>`;
       dialog.hidden = false;
       document.body.style.overflow = 'hidden';
       confirmCancel.focus();

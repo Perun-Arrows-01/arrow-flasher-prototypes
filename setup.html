@@ -90,10 +90,35 @@
     @media (max-width: 720px) { .row { grid-template-columns: 1fr; } .grid-2, .grid-4 { grid-template-columns: 1fr; } .sticky-bar { flex-direction: column; align-items: flex-start; } .actions { justify-content: stretch; flex-direction: column; } .actions button { width: 100%; } }
     :focus-visible { outline: 2px solid var(--blue, #1f6feb); outline-offset: 2px; }
     input[type="checkbox"]:focus-visible, input[type="radio"]:focus-visible { outline-offset: 3px; }
-  </style>
+  
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--blue);
+      color: #fff;
+      padding: 8px 16px;
+      text-decoration: none;
+      z-index: 1000;
+      border-radius: 0 0 4px 0;
+    }
+    .skip-link:focus {
+      top: 0;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+</style>
 </head>
 <body>
-  <main class="app">
+  <a href="#main" class="skip-link">Skip to main content</a>
+
+  <main id="main" class="app">
     <h1>Settings</h1>
     <div class="locked-banner" role="alert">
       <strong>🔒 License activation is temporarily locked.</strong> The prototype keeps all fields visible but read-only on the License page.
@@ -272,7 +297,7 @@
       <details class="panel" open>
         <summary><h2>System</h2></summary>
         <div class="panel-body">
-          <button type="button" class="danger" data-confirm-action="Restart server" data-feedback="Server restart simulated. No backend was called.">Restart server</button>
+          <button type="button" class="danger" data-confirm-action="Restart server" data-confirm-impact="This will restart the flasher server, interrupting any active operations." data-feedback="Server restart simulated. No backend was called.">Restart server</button>
           <p class="note">Restart is allowed only when all slots are idle. You may force restart if stuck.</p>
         </div>
       </details>
@@ -320,7 +345,8 @@
       activeTrigger = trigger;
       pendingFeedback = trigger.dataset.feedback || `${trigger.dataset.confirmAction} simulated.`;
       dialogTitle.textContent = `Confirm ${trigger.dataset.confirmAction}`;
-      dialogDesc.textContent = `You are about to ${trigger.dataset.confirmAction.toLowerCase()} in the static mock UI.`;
+      const impact = trigger.dataset.confirmImpact || `You are about to ${trigger.dataset.confirmAction.toLowerCase()} in the static mock UI.`;
+      dialogDesc.innerHTML = `${impact}<br><span style="color:var(--muted);font-size:13px;margin-top:8px;display:block;">This is a simulated prototype action.</span>`;
       dialog.hidden = false;
       document.body.style.overflow = 'hidden';
       confirmCancel.focus();

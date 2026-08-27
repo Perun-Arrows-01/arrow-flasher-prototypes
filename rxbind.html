@@ -73,10 +73,35 @@
       /* P0 a11y: visible keyboard focus */
     :focus-visible { outline: 2px solid var(--blue, #1f6feb); outline-offset: 2px; }
     input[type="checkbox"]:focus-visible, input[type="radio"]:focus-visible { outline-offset: 3px; }
-  </style>
+  
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--blue);
+      color: #fff;
+      padding: 8px 16px;
+      text-decoration: none;
+      z-index: 1000;
+      border-radius: 0 0 4px 0;
+    }
+    .skip-link:focus {
+      top: 0;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+</style>
 </head>
 <body>
-  <main class="app">
+  <a href="#main" class="skip-link">Skip to main content</a>
+
+  <main id="main" class="app">
     <h1>RX Bind</h1>
 
     <div class="banner green" role="status" aria-live="polite">
@@ -107,7 +132,7 @@
       <div id="scan-feedback" role="status" aria-live="polite" class="note" style="margin-bottom:12px;"></div>
       <div class="table-wrap">
         <table aria-label="Discovered receivers">
-          <thead><tr><th scope="col" aria-label="Select">#</th><th scope="col">SSID</th><th scope="col">Signal</th><th scope="col">Protocol</th></tr></thead>
+          <thead><tr><th scope="col" aria-label="Select all"><input type="checkbox" id="select-all" aria-label="Select all receivers" /></th><th scope="col">SSID</th><th scope="col">Signal</th><th scope="col">Protocol</th></tr></thead>
           <tbody>
             <tr>
               <td><input type="checkbox" class="rx-select" aria-label="Select ExpressLRS-5G-01" /></td>
@@ -218,9 +243,43 @@
 
       checkboxes.forEach(cb => cb.addEventListener('change', updateBind));
 
+      // Select all checkbox
+      const selectAll = document.getElementById('select-all');
+      if (selectAll) {
+        selectAll.addEventListener('change', () => {
+          checkboxes.forEach(cb => cb.checked = selectAll.checked);
+          updateBind();
+        });
+      }
+
       bindBtn.addEventListener('click', () => {
-        const count = document.querySelectorAll('.rx-select:checked').length;
-        bindFeedback.textContent = `Simulated bind for ${count} receiver${count === 1 ? '' : 's'}. No radios were configured.`;
+        const selected = document.querySelectorAll('.rx-select:checked');
+        if (selected.length === 0) return;
+        
+        // Show progress
+        const progressDiv = document.createElement('div');
+        progressDiv.className = 'feedback';
+        progressDiv.setAttribute('role', 'status');
+        progressDiv.setAttribute('aria-live', 'polite');
+        progressDiv.style.cssText = 'margin-top:16px;padding:12px;background:var(--blue-soft);border:1px solid var(--blue-border);border-radius:8px;';
+        progressDiv.innerHTML = '<strong>Binding in progress...</strong><br><span id="bind-progress">Connecting to 0 of ' + selected.length + ' receivers</span>';
+        
+        bindBtn.parentElement.appendChild(progressDiv);
+        bindBtn.disabled = true;
+        
+        // Simulate progress
+        let completed = 0;
+        const interval = setInterval(() => {
+          completed++;
+          document.getElementById('bind-progress').textContent = `Connecting to ${completed} of ${selected.length} receivers`;
+          if (completed >= selected.length) {
+            clearInterval(interval);
+            progressDiv.innerHTML = '<strong>✅ Bind complete</strong><br>Successfully bound ' + selected.length + ' receiver(s).';
+            progressDiv.style.background = 'var(--green-soft)';
+            progressDiv.style.borderColor = 'var(--green-border)';
+            bindBtn.disabled = false;
+          }
+        }, 800);
       });
 
       scanBtn.addEventListener('click', () => {

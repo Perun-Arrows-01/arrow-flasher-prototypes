@@ -49,10 +49,35 @@
   
     :focus-visible { outline: 2px solid var(--blue, #1f6feb); outline-offset: 2px; }
     a:focus-visible { outline-offset: 3px; }
+
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--blue);
+      color: #fff;
+      padding: 8px 16px;
+      text-decoration: none;
+      z-index: 1000;
+      border-radius: 0 0 4px 0;
+    }
+    .skip-link:focus {
+      top: 0;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
 </style>
 </head>
 <body>
-  <main class="app">
+  <a href="#main" class="skip-link">Skip to main content</a>
+
+  <main id="main" class="app">
     <h1>Arrow Flasher — UI prototypes</h1>
     <p class="subtitle">Self-contained HTML mockups matching the real React app controls.</p>
 

@@ -57,16 +57,71 @@
       /* P0 a11y: visible keyboard focus */
     :focus-visible { outline: 2px solid var(--blue, #1f6feb); outline-offset: 2px; }
     input[type="checkbox"]:focus-visible, input[type="radio"]:focus-visible { outline-offset: 3px; }
-  </style>
+  
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--blue);
+      color: #fff;
+      padding: 8px 16px;
+      text-decoration: none;
+      z-index: 1000;
+      border-radius: 0 0 4px 0;
+    }
+    .skip-link:focus {
+      top: 0;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    .range-btn {
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      color: var(--text);
+      padding: 6px 12px;
+      border-radius: 6px;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.15s;
+    }
+    .range-btn:hover {
+      background: var(--bg-input);
+    }
+    .range-btn.active {
+      background: var(--blue);
+      border-color: var(--blue);
+      color: #fff;
+    }
+</style>
 </head>
 <body>
-  <main class="app">
+  <a href="#main" class="skip-link">Skip to main content</a>
+
+  <main id="main" class="app">
     <h1>History</h1>
 
     <div class="filters" role="group" aria-label="Filter history">
       <button class="active" type="button" data-filter="all" aria-pressed="true">All</button>
       <button type="button" data-filter="success" aria-pressed="false">Success</button>
       <button type="button" data-filter="failure" aria-pressed="false">Failure</button>
+    </div>
+
+    <div class="filter-controls" style="display:flex;gap:16px;align-items:center;margin-top:12px;flex-wrap:wrap;">
+      <div class="date-range" role="group" aria-label="Date range">
+        <button type="button" data-range="all" class="range-btn active" aria-pressed="true">All time</button>
+        <button type="button" data-range="7d" class="range-btn" aria-pressed="false">Last 7 days</button>
+        <button type="button" data-range="24h" class="range-btn" aria-pressed="false">Last 24h</button>
+      </div>
+      <div class="filter-count" role="status" aria-live="polite" style="color:var(--muted);font-size:14px;">
+        Showing <strong id="visible-count">3</strong> of <strong>3</strong> sessions
+      </div>
     </div>
 
     <section class="panel">
@@ -159,6 +214,7 @@
         if (show) visible++;
       });
       emptyMsg.classList.toggle('hidden', visible > 0);
+      updateFilterCount();
     }
 
     filterButtons.forEach(btn => {
@@ -168,6 +224,45 @@
         applyFilter(btn.dataset.filter);
       });
     });
-  </script>
+  
+    // Filter count and date range logic
+    const rangeButtons = document.querySelectorAll('.range-btn');
+    const visibleCount = document.getElementById('visible-count');
+    const totalCount = 3; // Total sessions in mock data
+    
+    function updateFilterCount() {
+      const visibleRows = document.querySelectorAll('tbody tr[data-result]:not(.hidden):not(.detail-row)');
+      if (visibleCount) {
+        visibleCount.textContent = visibleRows.length;
+      }
+    }
+    
+    // Date range filter (mock - all sessions are from 2026-08-05)
+    rangeButtons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        rangeButtons.forEach(b => {
+          b.classList.remove('active');
+          b.setAttribute('aria-pressed', 'false');
+        });
+        btn.classList.add('active');
+        btn.setAttribute('aria-pressed', 'true');
+        
+        const range = btn.dataset.range;
+        // Mock logic: "Last 24h" shows 0 sessions (all are older), others show all
+        // In real app, this would filter by actual timestamps
+        console.log('Date range changed to:', range);
+        updateFilterCount();
+      });
+    });
+    
+    // Update count when status filters change
+    // filterButtons already declared above, reuse it
+    filterButtons.forEach(btn => {
+      btn.addEventListener('click', updateFilterCount);
+    });
+    
+    // Initial count
+    updateFilterCount();
+</script>
 </body>
 </html>
