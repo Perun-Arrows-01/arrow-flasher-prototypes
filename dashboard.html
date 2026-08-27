@@ -436,7 +436,7 @@
           <label for="sort">Sort</label>
           <div class="select-wrap"><select id="sort"><option>slot #</option><option>recently plugged</option></select></div>
         </div>
-        <button type="button">Hide empty</button>
+        <button type="button"><span class="icon">👁</span> Hide empty</button>
       </div>
     </div>
 
@@ -449,7 +449,7 @@
         <span>empty <strong>1</strong></span>
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
-        <button type="button" data-confirm-action="Reset session" data-feedback="Reset session simulated. No real state was changed." data-confirm-impact="This will reset 3 active slots and clear all session data.">Reset session</button>
+        <button type="button" data-confirm-action="Reset session" data-feedback="Reset session simulated. No real state was changed." data-confirm-impact="This will reset 3 active slots and clear all session data."><span class="icon">⟲</span> Reset session</button>
         <button type="button"><span class="icon">📥</span> Export CSV</button>
       </div>
     </div>
@@ -457,8 +457,8 @@
     <div id="dashboard-feedback" class="feedback" role="status" aria-live="polite">Ready.</div>
 
     <div class="banner green" role="status"><strong>✅ Server ready</strong> — All subsystems operational.</div>
-    <div class="banner blue" role="alert"><strong>ℹ Mismatch</strong> — Slot 3 plugged drone matches template <strong>quad-x-default</strong>. <span class="banner-actions"><button type="button">Switch to quad-x-default</button><button type="button">Dismiss</button><button type="button"><span class="icon">↻</span> Reboot to DFU</button></span></div>
-    <div class="banner amber" role="alert"><strong>⚠ Unclaimed plug</strong> — USB 1-4.1 unrecognized. <span class="banner-actions"><button type="button">Claim</button><button type="button">Dismiss</button></span></div>
+    <div class="banner blue" role="alert"><strong>ℹ Mismatch</strong> — Slot 3 plugged drone matches template <strong>quad-x-default</strong>. <span class="banner-actions"><button type="button"><span class="icon">⇄</span> Switch to quad-x-default</button><button type="button"><span class="icon">✕</span> Dismiss</button><button type="button"><span class="icon">↻</span> Reboot to DFU</button></span></div>
+    <div class="banner amber" role="alert"><strong>⚠ Unclaimed plug</strong> — USB 1-4.1 unrecognized. <span class="banner-actions"><button type="button"><span class="icon">🔗</span> Claim</button><button type="button"><span class="icon">✕</span> Dismiss</button></span></div>
 
     <div class="slot-grid" aria-live="polite">
       <div class="slot-card">
@@ -507,7 +507,7 @@
         <div class="state-badge state-done"><span class="dot"></span>DONE</div>
         <div class="chips"><span class="chip uid">MCU 350022001150563131323932</span><span class="chip">8.3 s</span><span class="chip">first seen 14:21</span></div>
         <div class="big-banner done">✅ READY — DISCONNECT</div>
-        <div class="slot-actions"><button type="button">Eject</button></div>
+        <div class="slot-actions"><button type="button"><span class="icon">⏏</span> Eject</button></div>
       </div>
 
       <div class="slot-card">
@@ -589,7 +589,7 @@
         </div>
         <div style="margin-top:8px;display:flex;gap:8px;">
           <button class="btn-primary"><span class="icon">↻</span> Retry DFU</button>
-          <button class="btn-ghost">View logs</button>
+          <button class="btn-ghost"><span class="icon">📋</span> View logs</button>
         </div>
       </div>
     </div>
@@ -740,10 +740,10 @@
   </div>
   
   <script>
-    // Show toast after 2s (mock)
-    setTimeout(() => {
-      document.getElementById('soft-dfu-toast').style.display = 'block';
-    }, 2000);
+    // Toast is hidden by default - only shown on user action
+    // setTimeout(() => {
+    //   document.getElementById('soft-dfu-toast').style.display = 'block';
+    // }, 2000);
   </script>
 
 </body>
