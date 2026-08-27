@@ -1,0 +1,5 @@
+# Local QA/a11y audit tooling — never commit
+node_modules/
+package.json
+package-lock.json
+a11y-audit.js
