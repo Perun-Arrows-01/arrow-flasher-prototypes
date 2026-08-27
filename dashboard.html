@@ -125,7 +125,123 @@
         transition-duration: 0.01ms !important;
       }
     }
-</style>
+
+    /* New slot state styles */
+    .state-badge.state-aborted { background: rgba(255, 152, 0, 0.15); color: var(--orange-text); }
+    .state-badge.state-aborted .dot { background: var(--orange); }
+    
+    .state-badge.state-info { background: rgba(33, 150, 243, 0.15); color: var(--blue-text); }
+    .state-badge.state-info .dot { background: var(--blue); }
+    
+    .chip.stuck { 
+      background: rgba(255, 193, 7, 0.2); 
+      color: var(--yellow-text); 
+      border: 1px solid var(--yellow);
+      animation: pulse 1.5s infinite;
+    }
+    
+    .chip.done { 
+      background: rgba(76, 175, 80, 0.2); 
+      color: var(--green-text); 
+      border: 1px solid var(--green);
+      cursor: pointer;
+    }
+    
+    .chip.next { 
+      background: rgba(33, 150, 243, 0.1); 
+      color: var(--blue-text); 
+      border: 1px solid var(--blue);
+      font-size: 11px;
+    }
+    
+    @keyframes pulse {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0.6; }
+    }
+    
+    /* Safety Banner */
+    .safety-banner {
+      background: rgba(255, 152, 0, 0.1);
+      border: 2px solid var(--orange);
+      border-radius: 8px;
+      padding: 16px;
+      margin: 16px 0;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    
+    .safety-banner.bypassed {
+      background: rgba(255, 68, 68, 0.1);
+      border-color: var(--red);
+    }
+    
+    .safety-banner .hold-btn {
+      background: var(--orange);
+      color: white;
+      border: none;
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .safety-banner .hold-btn::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      height: 100%;
+      width: 0;
+      background: rgba(255, 255, 255, 0.3);
+      transition: width 3s linear;
+    }
+    
+    .safety-banner .hold-btn.holding::after {
+      width: 100%;
+    }
+    
+    /* Toast notifications */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px 16px;
+      box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+      z-index: 1000;
+      max-width: 400px;
+    }
+    
+    .toast.error {
+      border-color: var(--red);
+      background: rgba(255, 68, 68, 0.1);
+    }
+    
+    .toast.success {
+      border-color: var(--green);
+      background: rgba(76, 175, 80, 0.1);
+    }
+    
+    /* Rack complete banner */
+    .rack-complete {
+      background: rgba(76, 175, 80, 0.1);
+      border: 2px solid var(--green);
+      border-radius: 8px;
+      padding: 16px;
+      margin: 16px 0;
+      text-align: center;
+    }
+    
+    .rack-complete h3 {
+      color: var(--green-text);
+      margin: 0 0 8px 0;
+    }
+
+  </style>
 </head>
 <body>
   <a href="#main" class="skip-link">Skip to main content</a>
@@ -232,6 +348,129 @@
         <div class="slot-actions"><button type="button" class="primary" data-confirm-action="Skip" data-feedback="Skipped the failed slot in this mock session.">Skip</button><button type="button" class="danger">Cancel</button></div>
       </div>
     </div>
+
+    <!-- ENTERING_DFU STATE -->
+    <div class="slot-card">
+      <div class="slot-header"><span class="slot-label">1-3.1</span><span class="slot-number">#7</span></div>
+      <div class="select-wrap"><select><option>arrow-flight-f405</option></select></div>
+      <div class="state-badge state-info"><span class="dot"></span>ENTERING_DFU</div>
+      <div class="chips"><span class="chip uid">MCU 350022001150563131323934</span></div>
+      <div style="color:var(--text-dim);font-size:13px;margin:8px 0;">Requesting DFU mode...</div>
+    </div>
+
+    <!-- DFU_READY STATE -->
+    <div class="slot-card">
+      <div class="slot-header"><span class="slot-label">1-3.2</span><span class="slot-number">#8</span></div>
+      <div class="select-wrap"><select><option>arrow-flight-f405</option></select></div>
+      <div class="state-badge state-success"><span class="dot"></span>DFU_READY</div>
+      <div class="chips"><span class="chip uid">MCU 350022001150563131323935</span></div>
+      <div style="color:var(--text-dim);font-size:13px;margin:8px 0;">Device in DFU, ready to flash</div>
+    </div>
+
+    <!-- REBOOTING STATE -->
+    <div class="slot-card">
+      <div class="slot-header"><span class="slot-label">1-3.3</span><span class="slot-number">#9</span></div>
+      <div class="select-wrap"><select><option>arrow-flight-f405</option></select></div>
+      <div class="state-badge state-warning"><span class="dot"></span>REBOOTING</div>
+      <div class="chips"><span class="chip uid">MCU 350022001150563131323936</span></div>
+      <div style="color:var(--text-dim);font-size:13px;margin:8px 0;">Rebooting to application mode...</div>
+    </div>
+
+    <!-- HANDSHAKE_MSP STATE -->
+    <div class="slot-card">
+      <div class="slot-header"><span class="slot-label">1-4.1</span><span class="slot-number">#10</span></div>
+      <div class="select-wrap"><select><option>arrow-flight-f405</option></select></div>
+      <div class="state-badge state-info"><span class="dot"></span>HANDSHAKE_MSP</div>
+      <div class="chips"><span class="chip uid">MCU 350022001150563131323937</span></div>
+      <div style="color:var(--text-dim);font-size:13px;margin:8px 0;">Establishing MSP connection...</div>
+    </div>
+
+    <!-- WAIT_BATTERY STATE -->
+    <div class="slot-card">
+      <div class="slot-header"><span class="slot-label">1-4.2</span><span class="slot-number">#11</span></div>
+      <div class="select-wrap"><select><option>arrow-flight-f405</option></select></div>
+      <div class="state-badge state-warning"><span class="dot"></span>WAIT_BATTERY</div>
+      <div class="chips"><span class="chip uid">MCU 350022001150563131323938</span></div>
+      <div style="color:var(--text-dim);font-size:13px;margin:8px 0;">Waiting for battery connection...</div>
+    </div>
+
+    <!-- MOTOR_TEST STATE -->
+    <div class="slot-card">
+      <div class="slot-header"><span class="slot-label">1-4.3</span><span class="slot-number">#12</span></div>
+      <div class="select-wrap"><select><option>arrow-flight-f405</option></select></div>
+      <div class="state-badge state-info"><span class="dot"></span>MOTOR_TEST</div>
+      <div class="chips"><span class="chip uid">MCU 350022001150563131323939</span></div>
+      <div style="color:var(--text-dim);font-size:13px;margin:8px 0;">Testing motor outputs...</div>
+    </div>
+
+    <!-- ERROR STATE WITH ERRORHINT -->
+    <div class="slot-card">
+      <div class="slot-header"><span class="slot-label">1-5.1</span><span class="slot-number">#13</span></div>
+      <div class="select-wrap"><select><option>arrow-flight-f405</option></select></div>
+      <div class="state-badge state-error"><span class="dot"></span>ERROR</div>
+      <div class="chips"><span class="chip repeat">repeat failure #2</span><span class="chip uid">MCU 350022001150563131323940</span></div>
+      <div class="error-hint" style="background:rgba(255,68,68,0.1);border:1px solid var(--red);border-radius:6px;padding:10px;margin:8px 0;">
+        <div style="color:var(--red-text);font-weight:600;margin-bottom:6px;">DFU entry failed</div>
+        <div style="color:var(--text-dim);font-size:13px;line-height:1.5;">
+          Device did not enter DFU mode within 3s timeout.<br>
+          <strong>Try:</strong> Check USB connection, then click "Retry DFU"
+        </div>
+        <div style="margin-top:8px;display:flex;gap:8px;">
+          <button class="btn-secondary" style="font-size:12px;padding:4px 10px;">Retry DFU</button>
+          <button class="btn-secondary" style="font-size:12px;padding:4px 10px;">View logs</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ABORTED STATE -->
+    <div class="slot-card">
+      <div class="slot-header"><span class="slot-label">1-5.2</span><span class="slot-number">#14</span></div>
+      <div class="select-wrap"><select><option>arrow-flight-f405</option></select></div>
+      <div class="state-badge state-aborted"><span class="dot"></span>ABORTED</div>
+      <div class="chips"><span class="chip uid">MCU 350022001150563131323941</span></div>
+      <div style="color:var(--text-dim);font-size:13px;margin:8px 0;">Flash aborted by user at 67%</div>
+      <div style="margin-top:8px;display:flex;gap:8px;">
+        <button class="btn-primary" style="font-size:12px;padding:4px 10px;">Resume</button>
+        <button class="btn-secondary" style="font-size:12px;padding:4px 10px;">Discard</button>
+      </div>
+    </div>
+
+    <!-- STUCK WATCHDOG STATE -->
+    <div class="slot-card">
+      <div class="slot-header"><span class="slot-label">1-5.3</span><span class="slot-number">#15</span></div>
+      <div class="select-wrap"><select><option>arrow-flight-f405</option></select></div>
+      <div class="state-badge state-warning"><span class="dot"></span>FLASHING_FC</div>
+      <div class="chips">
+        <span class="chip stuck">stuck 12s</span>
+        <span class="chip uid">MCU 350022001150563131323942</span>
+      </div>
+      <div style="color:var(--yellow-text);font-size:13px;margin:8px 0;">
+        ⚠ Watchdog: no progress for 12s. Auto-retry in 3s...
+      </div>
+    </div>
+
+    <!-- MARK AS DONE CHIP -->
+    <div class="slot-card">
+      <div class="slot-header"><span class="slot-label">1-6.1</span><span class="slot-number">#16</span></div>
+      <div class="select-wrap"><select><option>arrow-flight-f405</option></select></div>
+      <div class="state-badge state-success"><span class="dot"></span>DONE</div>
+      <div class="chips">
+        <span class="chip done">✓ Mark as DONE</span>
+        <span class="chip uid">MCU 350022001150563131323943</span>
+        <span class="chip next">next: quad-x-default</span>
+      </div>
+      <div style="color:var(--green-text);font-size:13px;margin:8px 0;">Flash complete (8.3s)</div>
+    </div>
+
+
+  <!-- Rack Complete Banner -->
+  <div class="rack-complete">
+    <h3>✓ Rack Complete</h3>
+    <div style="color:var(--text-dim);">
+      All 16 slots flashed successfully. Ready for next batch.
+    </div>
+  </div>
+
   </main>
 
   <div id="confirm-layer" class="dialog-backdrop" hidden>
@@ -314,5 +553,26 @@
 
     setFeedback('Ready. Reset session and Skip are simulated destructive actions.');
   </script>
+
+  <!-- Soft DFU Failed Toast -->
+  <div class="toast error" id="soft-dfu-toast" style="display:none;">
+    <div style="font-weight:600;color:var(--red-text);margin-bottom:4px;">
+      Soft DFU Failed
+    </div>
+    <div style="font-size:13px;color:var(--text-dim);">
+      Device did not respond to soft DFU request. Try manual DFU entry.
+    </div>
+    <button style="margin-top:8px;padding:4px 12px;font-size:12px;" onclick="this.parentElement.style.display='none'">
+      Dismiss
+    </button>
+  </div>
+  
+  <script>
+    // Show toast after 2s (mock)
+    setTimeout(() => {
+      document.getElementById('soft-dfu-toast').style.display = 'block';
+    }, 2000);
+  </script>
+
 </body>
 </html>

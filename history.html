@@ -179,6 +179,16 @@
       </div>
       <p id="history-empty" class="empty hidden">No entries match the selected filter.</p>
     </section>
+
+  <!-- Empty State -->
+  <div id="empty-state" style="display:none;text-align:center;padding:60px 20px;">
+    <div style="font-size:48px;margin-bottom:16px;">📋</div>
+    <h2 style="color:var(--text-dim);margin:0 0 8px 0;">No flashes yet</h2>
+    <p style="color:var(--text-dim);font-size:14px;">
+      Flash history will appear here after you complete your first flash session.
+    </p>
+  </div>
+
   </main>
 
   <script>
@@ -266,5 +276,25 @@
     // Initial count
     updateFilterCount();
 </script>
+
+  <script>
+    // Toggle empty state (for demo)
+    const toggleEmpty = document.createElement('button');
+    toggleEmpty.textContent = 'Toggle Empty State';
+    toggleEmpty.style.cssText = 'position:fixed;bottom:20px;left:20px;padding:8px 16px;z-index:999;';
+    toggleEmpty.onclick = () => {
+      const empty = document.getElementById('empty-state');
+      const table = document.querySelector('table');
+      if (empty.style.display === 'none') {
+        empty.style.display = 'block';
+        table.style.display = 'none';
+      } else {
+        empty.style.display = 'none';
+        table.style.display = 'table';
+      }
+    };
+    document.body.appendChild(toggleEmpty);
+  </script>
+
 </body>
 </html>
