@@ -337,5 +337,33 @@
       updateBind();
     })();
   </script>
+
+  <!-- Loading Overlay -->
+  <div id="loading-overlay" style="display:none;position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:1000;display:flex;align-items:center;justify-content:center;">
+    <div style="text-align:center;">
+      <div style="font-size:48px;margin-bottom:16px;">⏳</div>
+      <h2 style="color:white;margin:0 0 8px 0;">Scanning for receivers...</h2>
+      <p style="color:var(--text-dim);font-size:14px;">This may take up to 10 seconds</p>
+    </div>
+  </div>
+  
+  <script>
+    // Show loading for 2s on page load (mock)
+    const overlay = document.getElementById('loading-overlay');
+    overlay.style.display = 'flex';
+    setTimeout(() => {
+      overlay.style.display = 'none';
+    }, 2000);
+    
+    // Toggle button for demo
+    const toggleLoading = document.createElement('button');
+    toggleLoading.textContent = 'Toggle Loading';
+    toggleLoading.style.cssText = 'position:fixed;bottom:20px;left:20px;padding:8px 16px;z-index:999;';
+    toggleLoading.onclick = () => {
+      overlay.style.display = overlay.style.display === 'none' ? 'flex' : 'none';
+    };
+    document.body.appendChild(toggleLoading);
+  </script>
+
 </body>
 </html>
