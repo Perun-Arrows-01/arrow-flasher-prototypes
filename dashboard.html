@@ -26,6 +26,13 @@
       --blue: #1f6feb;
       --blue-soft: rgba(31,111,235,.14);
       --blue-text: #79c0ff;
+  --orange: #d29922;
+  --orange-soft: rgba(213,153,34,.12);
+  --orange-text: #ffd78e;
+  --yellow: #d29922;
+  --yellow-soft: rgba(213,153,34,.12);
+  --yellow-text: #ffd78e;
+
       --mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", monospace;
       --sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, Arial, sans-serif;
     }
@@ -99,7 +106,7 @@
     .dialog p { margin: 0 0 14px; color: var(--muted); }
     .dialog-actions { display: flex; gap: 8px; justify-content: flex-end; flex-wrap: wrap; }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-    @media (max-width: 720px) { .header { flex-direction: column; } .summary { flex-direction: column; align-items: flex-start; } .slot-grid { grid-template-columns: 1fr; } }
+    @media (max-width: 720px) { .header { flex-direction: column; } .summary { flex-direction: column; align-items: flex-start; } .slot-grid { display: grid; grid-template-columns: 1fr; } }
     :focus-visible { outline: 2px solid var(--blue, #1f6feb); outline-offset: 2px; }
     input[type="checkbox"]:focus-visible, input[type="radio"]:focus-visible { outline-offset: 3px; }
   
@@ -397,6 +404,15 @@
       border: 2px solid var(--green);
     }
 
+  
+    .btn-primary .icon,
+    .btn-danger .icon,
+    .btn-warning .icon,
+    .btn-secondary .icon {
+      margin-right: 4px;
+      font-size: 14px;
+    }
+
   </style>
 </head>
 <body>
@@ -415,7 +431,7 @@
           <div class="select-wrap"><select id="activeTemplate"><option>arrow-flight-f405</option><option>quad-x-default</option></select></div>
         </div>
         <label class="control-group"><input type="checkbox" /> Silent mode</label>
-        <button type="button">Rescan</button>
+        <button type="button"><span class="icon">🔍</span> Rescan</button>
         <div class="control-group">
           <label for="sort">Sort</label>
           <div class="select-wrap"><select id="sort"><option>slot #</option><option>recently plugged</option></select></div>
@@ -434,14 +450,14 @@
       </div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;">
         <button type="button" data-confirm-action="Reset session" data-feedback="Reset session simulated. No real state was changed." data-confirm-impact="This will reset 3 active slots and clear all session data.">Reset session</button>
-        <button type="button">Export CSV</button>
+        <button type="button"><span class="icon">📥</span> Export CSV</button>
       </div>
     </div>
 
     <div id="dashboard-feedback" class="feedback" role="status" aria-live="polite">Ready.</div>
 
     <div class="banner green" role="status"><strong>✅ Server ready</strong> — All subsystems operational.</div>
-    <div class="banner blue" role="alert"><strong>ℹ Mismatch</strong> — Slot 3 plugged drone matches template <strong>quad-x-default</strong>. <span class="banner-actions"><button type="button">Switch to quad-x-default</button><button type="button">Dismiss</button><button type="button">Reboot to DFU</button></span></div>
+    <div class="banner blue" role="alert"><strong>ℹ Mismatch</strong> — Slot 3 plugged drone matches template <strong>quad-x-default</strong>. <span class="banner-actions"><button type="button">Switch to quad-x-default</button><button type="button">Dismiss</button><button type="button"><span class="icon">↻</span> Reboot to DFU</button></span></div>
     <div class="banner amber" role="alert"><strong>⚠ Unclaimed plug</strong> — USB 1-4.1 unrecognized. <span class="banner-actions"><button type="button">Claim</button><button type="button">Dismiss</button></span></div>
 
     <div class="slot-grid" aria-live="polite">
@@ -461,7 +477,7 @@
           <div class="progress-bar"><div class="progress-fill" style="width:62%"></div></div>
         </div>
         <div class="chips"><span class="chip stuck">possibly stuck (12 s)</span></div>
-        <div class="slot-actions"><button type="button" class="btn-danger">Cancel</button></div>
+        <div class="slot-actions"><button type="button" class="btn-danger"><span class="icon">✕</span> Cancel</button></div>
       </div>
 
       <div class="slot-card">
@@ -473,7 +489,7 @@
           <div class="progress-bar"><div class="progress-fill blue" style="width:38%"></div></div>
         </div>
         <div class="chips"><span class="chip">MCU 350022001150563131323932</span></div>
-        <div class="slot-actions"><button type="button" class="btn-danger">Cancel</button></div>
+        <div class="slot-actions"><button type="button" class="btn-danger"><span class="icon">✕</span> Cancel</button></div>
       </div>
 
       <div class="slot-card">
@@ -482,7 +498,7 @@
         <div class="state-badge state-wait"><span class="dot"></span>WAIT_BATTERY</div>
         <div class="countdown"><span>Connect battery now</span><span class="countdown-time">2:35</span><span>left</span></div>
         <div style="font-size:12px;color:var(--muted);">Device in DFU, awaiting power for motor test.</div>
-        <div class="slot-actions"><button type="button">Retry</button><button type="button" class="btn-danger">Cancel</button></div>
+        <div class="slot-actions"><button type="button">Retry</button><button type="button" class="btn-danger"><span class="icon">✕</span> Cancel</button></div>
       </div>
 
       <div class="slot-card">
@@ -501,7 +517,7 @@
         <div class="chips"><span class="chip repeat">repeat failure #3</span><span class="chip uid">MCU 34001a001150563131323933</span></div>
         <div style="color:var(--red-text);font-size:13px;margin:8px 0;">DFU flash failed — check USB cable, hold BOOT0 longer</div>
         <div class="big-banner error">⚠ FAILED — CHECK</div>
-        <div class="slot-actions"><button class="btn-warning">Skip</button><button type="button" class="btn-danger">Cancel</button></div>
+        <div class="slot-actions"><button class="btn-warning"><span class="icon">⊘</span> Skip</button><button type="button" class="btn-danger"><span class="icon">✕</span> Cancel</button></div>
       </div>
     </div>
 
@@ -572,7 +588,7 @@
           <strong>Try:</strong> Check USB connection, then click "Retry DFU"
         </div>
         <div style="margin-top:8px;display:flex;gap:8px;">
-          <button class="btn-primary">Retry DFU</button>
+          <button class="btn-primary"><span class="icon">↻</span> Retry DFU</button>
           <button class="btn-ghost">View logs</button>
         </div>
       </div>
@@ -586,8 +602,8 @@
       <div class="chips"><span class="chip uid">MCU 350022001150563131323941</span></div>
       <div style="color:var(--text-dim);font-size:13px;margin:8px 0;">Flash aborted by user at 67%</div>
       <div style="margin-top:8px;display:flex;gap:8px;">
-        <button class="btn-primary">Resume</button>
-        <button class="btn-danger">Discard</button>
+        <button class="btn-primary"><span class="icon">→</span> Resume</button>
+        <button class="btn-danger"><span class="icon">⊘</span> Discard</button>
       </div>
     </div>
 
